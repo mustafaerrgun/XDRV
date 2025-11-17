@@ -8,6 +8,8 @@
 
 #ifndef STM32F767XX_H_
 #define STM32F767XX_H_
+
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -206,21 +208,25 @@ typedef struct
 #define GPIOK_BASE            (AHB1PERIPH_BASE + 0x2800UL)
 #define RCC_BASE              (AHB1PERIPH_BASE + 0x3800UL)
 
-/*!< I2C peripheral base address */
+/*!< APB1 peripherals */
 #define I2C1_BASE             (APB1PERIPH_BASE + 0x5400UL)
 #define I2C2_BASE             (APB1PERIPH_BASE + 0x5800UL)
-
-/*!< SPI peripheral base address */
+#define I2C3_BASE             (APB1PERIPH_BASE + 0x5C00UL)
+#define I2C4_BASE             (APB1PERIPH_BASE + 0x6000UL)
 #define SPI2_BASE             (APB1PERIPH_BASE + 0x3800UL)
 #define SPI3_BASE             (APB1PERIPH_BASE + 0x3C00UL)
-
-/*!< USART peripheral base address */
 #define USART2_BASE           (APB1PERIPH_BASE + 0x4400UL)
 #define USART3_BASE           (APB1PERIPH_BASE + 0x4800UL)
 
 /*!< APB2 peripherals */
+#define USART1_BASE           (APB2PERIPH_BASE + 0x1000UL)
+#define USART6_BASE           (APB2PERIPH_BASE + 0x1400UL)
+#define SPI1_BASE             (APB2PERIPH_BASE + 0x3000UL)
+#define SPI4_BASE             (APB2PERIPH_BASE + 0x3400UL)
 #define SYSCFG_BASE           (APB2PERIPH_BASE + 0x3800UL)
 #define EXTI_BASE             (APB2PERIPH_BASE + 0x3C00UL)
+#define SPI5_BASE             (APB2PERIPH_BASE + 0x5000UL)
+#define SPI6_BASE             (APB2PERIPH_BASE + 0x5400UL)
 
 /** Peripheral Declaration */
 #define I2C1                ((I2C_TypeDef *) I2C1_BASE)
@@ -264,14 +270,22 @@ typedef struct
 	// Clock enable macros for I2Cx
 	#define I2C1_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 21) )
 	#define I2C2_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 22) )
+	#define I2C3_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 23) )
+	#define I2C4_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 24) )
 
 	// Clock enable macros for SPIx
+	#define SPI1_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 12) )
 	#define SPI2_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 14) )
 	#define SPI3_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 15) )
+	#define SPI4_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 13) )
+	#define SPI5_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 20) )
+	#define SPI6_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 21) )
 
 	//Clock enable macros for USARTx
+	#define USART1_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 4) )
 	#define USART2_CLOCK_ENABLE()	(RCC->APB1ENR |= (1 << 17) )
 	#define USART3_CLOCK_ENABLE()	(RCC->APB1ENR |= (1 << 18) )
+	#define USART6_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 5) )
 
 	// Clock enable macro for SYSCFG
 	#define SYSCFG_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 14) )
@@ -295,17 +309,38 @@ typedef struct
 	// Clock disable macros for I2Cx
 	#define I2C1_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 21) )
 	#define I2C2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 22) )
+	#define I2C3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 23) )
+	#define I2C4_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 24) )
 
 	// Clock disable macros for SPIx
+	#define SPI1_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 12) )
 	#define SPI2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 14) )
 	#define SPI3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 15) )
+	#define SPI4_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 13) )
+	#define SPI5_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 20) )
+	#define SPI6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 21) )
 
 	// Clock disable macros for USARTx
+	#define USART1_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 4) )
 	#define USART2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 17) )
 	#define USART3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 18) )
+	#define USART6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 5) )
 
 	// clock disable macro for SYSCFG
 	#define SYSCFG_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 14) )
+
+// GPIOx peripheral reset
+	#define GPIOA_REG_RESET()			do {(RCC->AHB1RSTR |=(1 <<  0)); (RCC->AHB1RSTR &= ~(1 <<  0));}while(0)
+	#define GPIOB_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  1)); (RCC->AHB1RSTR &= ~(1 <<  1));}while(0)
+	#define GPIOC_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  2)); (RCC->AHB1RSTR &= ~(1 <<  2));}while(0)
+	#define GPIOD_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  3)); (RCC->AHB1RSTR &= ~(1 <<  3));}while(0)
+	#define GPIOE_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  4)); (RCC->AHB1RSTR &= ~(1 <<  4));}while(0)
+	#define GPIOF_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  5)); (RCC->AHB1RSTR &= ~(1 <<  5));}while(0)
+	#define GPIOG_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  6)); (RCC->AHB1RSTR &= ~(1 <<  6));}while(0)
+	#define GPIOH_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  7)); (RCC->AHB1RSTR &= ~(1 <<  7));}while(0)
+	#define GPIOI_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  8)); (RCC->AHB1RSTR &= ~(1 <<  8));}while(0)
+	#define GPIOJ_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  9)); (RCC->AHB1RSTR &= ~(1 <<  9));}while(0)
+	#define GPIOK_REG_RESET()           do {(RCC->AHB1RSTR |=(1 << 10)); (RCC->AHB1RSTR &= ~(1 << 10));}while(0)
 
 
 #endif /* STM32F767XX_H_ */
