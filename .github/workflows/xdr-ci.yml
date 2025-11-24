@@ -19,3 +19,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi
+
+      # 3) Build XDR drivers + app sources 
+      - name: Compile XDR sources
+        run: |
+          arm-none-eabi-gcc -c \
+            -mcpu=cortex-m7 -mthumb \
+            -std=c11 -Wall -Wextra -Werror \
+            -I./Drivers/Inc \
+            ./Drivers/Src/*.c \
+            ./Src/*.c
