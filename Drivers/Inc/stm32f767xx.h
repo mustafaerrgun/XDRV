@@ -17,6 +17,21 @@
 #define __VO volatile
 
 /**
+  * FLASH Registers
+  */
+
+typedef struct
+{
+  __VO uint32_t ACR;      /*!< FLASH access control register,     Address offset: 0x00 */
+  __VO uint32_t KEYR;     /*!< FLASH key register,                Address offset: 0x04 */
+  __VO uint32_t OPTKEYR;  /*!< FLASH option key register,         Address offset: 0x08 */
+  __VO uint32_t SR;       /*!< FLASH status register,             Address offset: 0x0C */
+  __VO uint32_t CR;       /*!< FLASH control register,            Address offset: 0x10 */
+  __VO uint32_t OPTCR;    /*!< FLASH option control register ,    Address offset: 0x14 */
+  __VO uint32_t OPTCR1;   /*!< FLASH option control register 1 ,  Address offset: 0x18 */
+} FLASH_TypeDef;
+
+/**
   * External Interrupt/Event Controller
   */
 
@@ -207,6 +222,8 @@ typedef struct
 #define GPIOJ_BASE            (AHB1PERIPH_BASE + 0x2400UL)
 #define GPIOK_BASE            (AHB1PERIPH_BASE + 0x2800UL)
 #define RCC_BASE              (AHB1PERIPH_BASE + 0x3800UL)
+#define FLASH_R_BASE          (AHB1PERIPH_BASE + 0x3C00UL)
+#define FLASHSIZE_BASE        0x1FF0F442UL
 
 /*!< APB1 peripherals */
 #define I2C1_BASE             (APB1PERIPH_BASE + 0x5400UL)
@@ -249,24 +266,12 @@ typedef struct
 #define GPIOJ               ((GPIO_TypeDef *) GPIOJ_BASE)
 #define GPIOK               ((GPIO_TypeDef *) GPIOK_BASE)
 #define RCC                 ((RCC_TypeDef *) RCC_BASE)
+#define FLASH               ((FLASH_TypeDef *) FLASH_R_BASE)
 
 
 /** Peripheral Clock Enable Macros
   *
   */
-	// Clock enable macros for GPIOx
-	#define GPIOA_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 0) )
-	#define GPIOB_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 1) )
-	#define GPIOC_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 2) )
-	#define GPIOD_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 3) )
-	#define GPIOE_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 4) )
-	#define GPIOF_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 5) )
-	#define GPIOG_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 6) )
-	#define GPIOH_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 7) )
-	#define GPIOI_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 8) )
-	#define GPIOJ_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 9) )
-	#define GPIOK_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 10) )
-
 	// Clock enable macros for I2Cx
 	#define I2C1_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 21) )
 	#define I2C2_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 22) )
@@ -293,19 +298,6 @@ typedef struct
 /** Peripheral Clock Disable Macros
   *
   */
-	// Clock disable macros for GPIOx
-	#define GPIOA_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 0) )
-	#define GPIOB_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 1) )
-	#define GPIOC_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 2) )
-	#define GPIOD_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 3) )
-	#define GPIOE_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 4) )
-	#define GPIOF_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 5) )
-	#define GPIOG_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 6) )
-	#define GPIOH_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 7) )
-	#define GPIOI_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 8) )
-	#define GPIOJ_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 9) )
-	#define GPIOK_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 10) )
-
 	// Clock disable macros for I2Cx
 	#define I2C1_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 21) )
 	#define I2C2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 22) )
@@ -328,19 +320,5 @@ typedef struct
 
 	// clock disable macro for SYSCFG
 	#define SYSCFG_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 14) )
-
-// GPIOx peripheral reset
-	#define GPIOA_REG_RESET()			do {(RCC->AHB1RSTR |=(1 <<  0)); (RCC->AHB1RSTR &= ~(1 <<  0));}while(0)
-	#define GPIOB_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  1)); (RCC->AHB1RSTR &= ~(1 <<  1));}while(0)
-	#define GPIOC_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  2)); (RCC->AHB1RSTR &= ~(1 <<  2));}while(0)
-	#define GPIOD_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  3)); (RCC->AHB1RSTR &= ~(1 <<  3));}while(0)
-	#define GPIOE_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  4)); (RCC->AHB1RSTR &= ~(1 <<  4));}while(0)
-	#define GPIOF_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  5)); (RCC->AHB1RSTR &= ~(1 <<  5));}while(0)
-	#define GPIOG_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  6)); (RCC->AHB1RSTR &= ~(1 <<  6));}while(0)
-	#define GPIOH_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  7)); (RCC->AHB1RSTR &= ~(1 <<  7));}while(0)
-	#define GPIOI_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  8)); (RCC->AHB1RSTR &= ~(1 <<  8));}while(0)
-	#define GPIOJ_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  9)); (RCC->AHB1RSTR &= ~(1 <<  9));}while(0)
-	#define GPIOK_REG_RESET()           do {(RCC->AHB1RSTR |=(1 << 10)); (RCC->AHB1RSTR &= ~(1 << 10));}while(0)
-
 
 #endif /* STM32F767XX_H_ */
