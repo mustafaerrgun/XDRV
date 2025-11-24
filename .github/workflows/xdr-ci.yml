@@ -20,7 +20,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi
 
-      # 3) Build XDR drivers + app sources 
+      # 3) Build XDR drivers
       - name: Compile XDR sources
         run: |
           arm-none-eabi-gcc -c \
@@ -28,4 +28,4 @@ jobs:
             -std=c11 -Wall -Wextra -Werror \
             -I./Drivers/Inc \
             ./Drivers/Src/*.c \
-            ./Src/LED_Toggling.c
+

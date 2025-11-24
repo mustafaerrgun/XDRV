@@ -3,7 +3,7 @@ Bare-metal STM32F767 firmware drivers (GPIO, RCC, USART, I2C, SPI) built from sc
 
 ## 1. Overview
 
-**XDR (eXperimental Driver)** is a lightweight, register-level driver framework for the STM32F767 microcontroller family.
+**XDR (eXperimental Driver)** is a lightweight, low-level driver framework for the STM32F767 microcontroller family.
 
 It is designed without HAL or LL, focusing on:
 
