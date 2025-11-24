@@ -18,14 +18,47 @@ jobs:
       - name: Install ARM GCC
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi
 
-      # 3) Build XDR drivers + app sources 
-      - name: Compile XDR sources
+      # 3) Create build directory
+      - name: Create build directory
+        run: mkdir -p build
+
+      # 4) Compile drivers + startup + selected application
+      - name: Compile source files
         run: |
-          arm-none-eabi-gcc -c \
+          arm-none-eabi-gcc \
             -mcpu=cortex-m7 -mthumb \
-            -std=c11 -Wall -Wextra -Werror \
+            -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
+            -std=c11 -O2 -Wall -Wextra -Werror \
+            -DSTM32F767xx \
             -I./Drivers/Inc \
+            -c \
             ./Drivers/Src/*.c \
-            ./Src/*.c
+            ./Src/LED_Toggling.c \
+            ./Startup/*.s \
+            -o build/
+
+      # 5) Link into final firmware using FLASH linker script
+      - name: Link firmware
+        run: |
+          arm-none-eabi-gcc \
+            -mcpu=cortex-m7 -mthumb \
+            -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
+            -T STM32F767ZITX_FLASH.ld \
+            -Wl,-Map=build/xdrv.map \
+            build/*.o \
+            -o build/xdrv.elf \
+            -nostdlib -Wl,--gc-sections
+
+      # 6) Generate .bin file
+      - name: Convert ELF to BIN
+        run: |
+          arm-none-eabi-objcopy -O binary build/xdrv.elf build/xdrv.bin
+
+      # 7) Upload artifacts
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: XDRV-Firmware
+          path: build/
