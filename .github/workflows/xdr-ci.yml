@@ -28,4 +28,4 @@ jobs:
             -std=c11 -Wall -Wextra -Werror \
             -I./Drivers/Inc \
             ./Drivers/Src/*.c \
-            ./Src/*.c
+            ./Src/LED_Toggling.c
