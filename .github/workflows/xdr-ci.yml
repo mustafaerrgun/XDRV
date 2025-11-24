@@ -26,6 +26,6 @@ jobs:
           arm-none-eabi-gcc -c \
             -mcpu=cortex-m7 -mthumb \
             -std=c11 -Wall -Wextra -Werror \
-            -I./Drivers/Inc \
+            -I./Drivers/Inc/*.h \
             ./Drivers/Src/*.c \
             ./Src/*.c
