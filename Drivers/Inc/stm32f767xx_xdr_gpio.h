@@ -20,7 +20,6 @@ typedef struct{
 	uint8_t XDR_GPIO_PinPUPDType;
 	uint8_t XDR_GPIO_PinSetReset;
 	uint8_t XDR_GPIO_PinAFMode;
-
 }XDR_GPIO_Config;
 
 typedef struct{
@@ -93,4 +92,44 @@ void XDR_GPIO_Toggle(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin);
 #define GPIO_NO_PUPD			0
 #define GPIO_PIN_PD				2
 #define GPIO_PIN_PU				1
+
+// Clock enable macros for GPIOx
+	#define GPIOA_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 0) )
+	#define GPIOB_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 1) )
+	#define GPIOC_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 2) )
+	#define GPIOD_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 3) )
+	#define GPIOE_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 4) )
+	#define GPIOF_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 5) )
+	#define GPIOG_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 6) )
+	#define GPIOH_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 7) )
+	#define GPIOI_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 8) )
+	#define GPIOJ_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 9) )
+	#define GPIOK_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1 << 10) )
+
+// Clock disable macros for GPIOx
+	#define GPIOA_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 0) )
+	#define GPIOB_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 1) )
+	#define GPIOC_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 2) )
+	#define GPIOD_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 3) )
+	#define GPIOE_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 4) )
+	#define GPIOF_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 5) )
+	#define GPIOG_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 6) )
+	#define GPIOH_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 7) )
+	#define GPIOI_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 8) )
+	#define GPIOJ_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 9) )
+	#define GPIOK_CLOCK_DISABLE()	(RCC->AHB1ENR  &= ~(1 << 10) )
+
+// GPIOx peripheral reset
+	#define GPIOA_REG_RESET()			do {(RCC->AHB1RSTR |=(1 <<  0)); (RCC->AHB1RSTR &= ~(1 <<  0));}while(0)
+	#define GPIOB_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  1)); (RCC->AHB1RSTR &= ~(1 <<  1));}while(0)
+	#define GPIOC_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  2)); (RCC->AHB1RSTR &= ~(1 <<  2));}while(0)
+	#define GPIOD_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  3)); (RCC->AHB1RSTR &= ~(1 <<  3));}while(0)
+	#define GPIOE_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  4)); (RCC->AHB1RSTR &= ~(1 <<  4));}while(0)
+	#define GPIOF_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  5)); (RCC->AHB1RSTR &= ~(1 <<  5));}while(0)
+	#define GPIOG_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  6)); (RCC->AHB1RSTR &= ~(1 <<  6));}while(0)
+	#define GPIOH_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  7)); (RCC->AHB1RSTR &= ~(1 <<  7));}while(0)
+	#define GPIOI_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  8)); (RCC->AHB1RSTR &= ~(1 <<  8));}while(0)
+	#define GPIOJ_REG_RESET()           do {(RCC->AHB1RSTR |=(1 <<  9)); (RCC->AHB1RSTR &= ~(1 <<  9));}while(0)
+	#define GPIOK_REG_RESET()           do {(RCC->AHB1RSTR |=(1 << 10)); (RCC->AHB1RSTR &= ~(1 << 10));}while(0)
+
 #endif /* STM32F407XX__XDR_GPIO_DRIVER_H_ */
