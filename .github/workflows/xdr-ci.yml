@@ -1,0 +1,31 @@
+name: XDR CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Install ARM GCC toolchain
+      - name: Install ARM GCC
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi
+
+      # 3) Build XDR drivers
+      - name: Compile XDR sources
+        run: |
+          arm-none-eabi-gcc -c \
+            -mcpu=cortex-m7 -mthumb \
+            -std=c11 -Wall -Wextra -Werror \
+            -I./Drivers/Inc \
+            ./Drivers/Src/*.c \
+

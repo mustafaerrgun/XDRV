@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  * @file           : LED_Toggling.c
- * @brief          : Main program body
+ * @brief          : Test file for XDR GPIO Driver
  ******************************************************************************
  */
 
@@ -27,6 +27,7 @@ int main(void)
 void LED_Init(void)
 {
 	Led.XDR_GPIOx = GPIOB;
+	Led.XDR_PortId = XDR_GPIO_PORT_B;
 	Led.XDR_GPIO_Config.XDR_GPIO_Pin = GPIO_PIN_NO_7 ;
 	Led.XDR_GPIO_Config.XDR_GPIO_PinMode = GPIO_MODE_OUTPUT;
 	Led.XDR_GPIO_Config.XDR_GPIO_PinOType = GPIO_OP_TYPE_PP;
