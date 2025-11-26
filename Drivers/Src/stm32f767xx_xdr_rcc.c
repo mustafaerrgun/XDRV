@@ -46,9 +46,12 @@ static void XDR_Enable_ClockSource(XDR_RCC_Handle *RCC_Handle){
         // 1) Configure PLLCFGR
     	XDR_RCC_ConfigPLL(RCC_Handle);
         // 2) set PLLON
-    	RCC_Handle->XDR_RCC->CR |= (XDR_SET << XDR_RCC_CR_PLLON);
+    	RCC_Handle->XDR_RCC->CR |= (1UL << XDR_RCC_CR_PLLON);
         // 3) wait PLLRDY
-    	while(!(RCC_Handle->XDR_RCC->CR & (XDR_SET<<XDR_RCC_CR_PLLRDY))) { /* wait for PLL ready */ }
+    	while(!(RCC_Handle->XDR_RCC->CR & (1UL  <<XDR_RCC_CR_PLLRDY))) { /* wait for PLL ready */ }
+        break;
+    
+    default:
         break;
     }
 
@@ -62,8 +65,11 @@ static void XDR_RCC_ConfigPLL(XDR_RCC_Handle *RCC_Handle){
     while (!(RCC_Handle->XDR_RCC->CR & (XDR_SET << XDR_RCC_CR_HSIRDY))) { /* wait for HSI ready */ }
 
     // 2) Clear PLLON, wait PLLRDY = 0
- 	RCC_Handle->XDR_RCC->CR &= ~(XDR_SET << XDR_RCC_CR_PLLON);
- 	while((RCC_Handle->XDR_RCC->CR & (XDR_SET << XDR_RCC_CR_PLLRDY))) { /* wait for PLL not ready */ }
+ 	RCC_Handle->XDR_RCC->CR &= ~(1UL << XDR_RCC_CR_PLLON);
+
+    /* MISRA deviation: Waiting for hardware PLL lock. Condition changes in hardware. */
+    /* cppcheck-suppress misra-c2012-14.4 */
+ 	while((RCC_Handle->XDR_RCC->CR & (1UL << XDR_RCC_CR_PLLRDY))) { /* wait for PLL not ready */ }
 
     // 3) Clear flash latency and insert hardcoded PLLCFGR values into register
  	XDR_FLASH_WAIT_CLEAR();
@@ -87,6 +93,9 @@ static void XDR_RCC_ConfigPLL(XDR_RCC_Handle *RCC_Handle){
         case XDR_SYSCLK_216MHZ:
         	RCC_Handle->XDR_RCC->PLLCFGR = XDR_RCC_PLLCFGR_216MHZ;
         	XDR_FLASH_WAIT_216MHZ();
+            break;
+        
+        default:
             break;
     }
 }
@@ -121,6 +130,8 @@ static void XDR_RCC_SelectSystemClock(XDR_RCC_Handle *RCC_Handle)
             break;
         case XDR_PLL_CLOCK:
         	RCC_Handle->XDR_RCC->CFGR |= (XDR_PLL_CLOCK << XDR_RCC_CFGR_SW);
+            break;
+        default:
             break;
     }
 

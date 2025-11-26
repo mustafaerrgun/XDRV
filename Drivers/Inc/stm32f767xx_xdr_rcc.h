@@ -54,47 +54,47 @@ typedef struct{
 
 
 
-#define XDR_RESET 0
-#define XDR_SET   1
+#define XDR_RESET  0U
+#define XDR_SET    1U
 
-#define XDR_HSI_CLOCK 0
-#define XDR_PLL_CLOCK 2
+#define XDR_HSI_CLOCK 0U
+#define XDR_PLL_CLOCK 2U
 
 // HSI clock frequency 16MHz
 #define XDR_HSI_VALUE 16000000
 
 // System clock frequencies
-#define XDR_SYSCLK_16MHZ    0
-#define XDR_SYSCLK_48MHZ    1
-#define XDR_SYSCLK_96MHZ    2
-#define XDR_SYSCLK_144MHZ   3
-#define XDR_SYSCLK_216MHZ   4
+#define XDR_SYSCLK_16MHZ    0U
+#define XDR_SYSCLK_48MHZ    1U
+#define XDR_SYSCLK_96MHZ    2U
+#define XDR_SYSCLK_144MHZ   3U
+#define XDR_SYSCLK_216MHZ   4U
 
 // Macros for CR
-#define XDR_RCC_CR_HSION 		0
-#define XDR_RCC_CR_HSIRDY 		1
-#define XDR_RCC_CR_HSITRIM 		3
-#define XDR_RCC_CR_HSICAL 		8
-#define XDR_RCC_CR_HSEON 		16
-#define XDR_RCC_CR_HSERDY 		17
-#define XDR_RCC_CR_HSEBYP 		18
-#define XDR_RCC_CR_CSSON 		19
-#define XDR_RCC_CR_PLLON 		24
-#define XDR_RCC_CR_PLLRDY		25
-#define XDR_RCC_CR_PLLI2SON 	26
-#define XDR_RCC_CR_PLLI2SRDY	27
+#define XDR_RCC_CR_HSION 		  0U
+#define XDR_RCC_CR_HSIRDY 		1U
+#define XDR_RCC_CR_HSITRIM 		3U
+#define XDR_RCC_CR_HSICAL 		8U
+#define XDR_RCC_CR_HSEON 		  16U
+#define XDR_RCC_CR_HSERDY 		17U
+#define XDR_RCC_CR_HSEBYP 		18U
+#define XDR_RCC_CR_CSSON 		  19U
+#define XDR_RCC_CR_PLLON 		  24U
+#define XDR_RCC_CR_PLLRDY		  25U
+#define XDR_RCC_CR_PLLI2SON 	26U
+#define XDR_RCC_CR_PLLI2SRDY	27U
 
 // Macros for PLLCFGR
-#define XDR_RCC_PLLCFGR_PLLM   0
-#define XDR_RCC_PLLCFGR_PLLN   6
-#define XDR_RCC_PLLCFGR_PLLP   16
-#define XDR_RCC_PLLCFGR_PLLSRC 22
-#define XDR_RCC_PLLCFGR_PLLQ   24
+#define XDR_RCC_PLLCFGR_PLLM   0U
+#define XDR_RCC_PLLCFGR_PLLN   6U
+#define XDR_RCC_PLLCFGR_PLLP   16U
+#define XDR_RCC_PLLCFGR_PLLSRC 22U
+#define XDR_RCC_PLLCFGR_PLLQ   24U
 
-#define XDR_RCC_PLLCFGR_PLLM_MASK		63
-#define XDR_RCC_PLLCFGR_PLLN_MASK		511
-#define XDR_RCC_PLLCFGR_PLLSRC_MASK 	1
-#define XDR_RCC_PLLCFGR_PLLP_MASK		3
+#define XDR_RCC_PLLCFGR_PLLM_MASK		  63U
+#define XDR_RCC_PLLCFGR_PLLN_MASK		  511U
+#define XDR_RCC_PLLCFGR_PLLSRC_MASK 	1U
+#define XDR_RCC_PLLCFGR_PLLP_MASK		  3U
 
 #define XDR_RCC_PLLCFGR_48MHZ  0x22000C08  // PLLM:8, PLLN:48,  PLLP:2, PLLSRC:0, PLLQ:2, PLLR:2
 #define XDR_RCC_PLLCFGR_96MHZ  0x24001808  // PLLM:8, PLLN:96,  PLLP:2, PLLSRC:0, PLLQ:4, PLLR:2
@@ -102,17 +102,17 @@ typedef struct{
 #define XDR_RCC_PLLCFGR_216MHZ 0x29003608  // PLLM:8, PLLN:216, PLLP:2, PLLSRC:0, PLLQ:9, PLLR:2
 
 // Macros for CFGR
-#define XDR_RCC_CFGR_SW      0
-#define XDR_RCC_CFGR_SWS     2
-#define XDR_RCC_CFGR_HPRE    4
-#define XDR_RCC_CFGR_PPRE1   10
-#define XDR_RCC_CFGR_PPRE2   13
+#define XDR_RCC_CFGR_SW      0U
+#define XDR_RCC_CFGR_SWS     2U
+#define XDR_RCC_CFGR_HPRE    4U
+#define XDR_RCC_CFGR_PPRE1   10U
+#define XDR_RCC_CFGR_PPRE2   13U
 
-#define XDR_RCC_CFGR_SW_MASK     (0x3U << XDR_RCC_CFGR_SW)
-#define XDR_RCC_CFGR_SWS_MASK    (0x3U << XDR_RCC_CFGR_SWS)
-#define XDR_RCC_CFGR_HPRE_MASK   (0xFU << XDR_RCC_CFGR_HPRE)
-#define XDR_RCC_CFGR_PPRE1_MASK  (0x7U << XDR_RCC_CFGR_PPRE1)
-#define XDR_RCC_CFGR_PPRE2_MASK  (0x7U << XDR_RCC_CFGR_PPRE2)
+#define XDR_RCC_CFGR_SW_MASK     (0x3UL << XDR_RCC_CFGR_SW)
+#define XDR_RCC_CFGR_SWS_MASK    (0x3UL << XDR_RCC_CFGR_SWS)
+#define XDR_RCC_CFGR_HPRE_MASK   (0xFUL << XDR_RCC_CFGR_HPRE)
+#define XDR_RCC_CFGR_PPRE1_MASK  (0x7UL << XDR_RCC_CFGR_PPRE1)
+#define XDR_RCC_CFGR_PPRE2_MASK  (0x7UL << XDR_RCC_CFGR_PPRE2)
 
 
 /** Flash Latency
@@ -121,14 +121,14 @@ typedef struct{
 	frequency of the CPU clock (HCLK) and the supply voltage(3.3V) of the device.
   * Reference Manual : Table 7. Number of wait states according to CPU clock (HCLK) frequency
   */
-#define XDR_FLASH_WAIT		  0
-#define XDR_FLASH_WAIT_MASK	  15
+#define XDR_FLASH_WAIT		    0U
+#define XDR_FLASH_WAIT_MASK	  15UL
 
-#define XDR_FLASH_WAIT_16MHZ()  (FLASH->ACR |=  (0 << XDR_FLASH_WAIT))
-#define XDR_FLASH_WAIT_48MHZ()  (FLASH->ACR |=  (1 << XDR_FLASH_WAIT))
-#define XDR_FLASH_WAIT_96MHZ()  (FLASH->ACR |=  (3 << XDR_FLASH_WAIT))
-#define XDR_FLASH_WAIT_144MHZ() (FLASH->ACR |=  (4 << XDR_FLASH_WAIT))
-#define XDR_FLASH_WAIT_216MHZ() (FLASH->ACR |=  (7 << XDR_FLASH_WAIT))
+#define XDR_FLASH_WAIT_16MHZ()  (FLASH->ACR |=  (0UL << XDR_FLASH_WAIT))
+#define XDR_FLASH_WAIT_48MHZ()  (FLASH->ACR |=  (1UL << XDR_FLASH_WAIT))
+#define XDR_FLASH_WAIT_96MHZ()  (FLASH->ACR |=  (3UL << XDR_FLASH_WAIT))
+#define XDR_FLASH_WAIT_144MHZ() (FLASH->ACR |=  (4UL << XDR_FLASH_WAIT))
+#define XDR_FLASH_WAIT_216MHZ() (FLASH->ACR |=  (7UL << XDR_FLASH_WAIT))
 
 #define XDR_FLASH_WAIT_CLEAR()  (FLASH->ACR &= ~(XDR_FLASH_WAIT_MASK << XDR_FLASH_WAIT))
 

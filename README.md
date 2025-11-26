@@ -9,7 +9,7 @@ It is designed without HAL or LL, focusing on:
 
 - Full control of registers
 - Clear peripheral abstraction
-- Educational value (learning STM32 at register level)
+- Continuous Integration (CI) pipeline with MISRA compliance checks
 
 The project currently implements:
 
@@ -17,6 +17,14 @@ The project currently implements:
 2. **RCC Driver** — system clock configuration using HSI/PLL, AHB/APB prescalers, and flash wait-states
 
 The drivers rely on a custom reduced CMSIS-style header ([stm32f767xx.h](Drivers/Inc/stm32f767xx.h)) which defines all relevant register maps.
+
+
+**STM32 Nucleo-144** development board is being used with the STM32F767ZI MCU for testing the drivers.
+
+
+<p align="center">
+    <img src="Docs/Nucleo_144_Board.png" alt="CPU Architecture" height="700" width="500"/>
+</p>
 
 ## 2. XDR-GPIO Driver
 
@@ -101,10 +109,10 @@ Flash latency is automatically configured based on the selected **SYSCLK** frequ
 ### Completed
 - GPIO Driver  
 - RCC Driver  
-- Minimal CMSIS Hardware Layer  
+- Minimal CMSIS Hardware Layer 
+- MISRA Compliance Checker Integration 
 
 ### In Progress / Planned
-- MISRA Compliance Checker Integration
 - USART Driver  
 - SPI Driver  
-- I2C Driver 
+- I2C Driver
