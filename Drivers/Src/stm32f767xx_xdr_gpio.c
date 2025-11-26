@@ -13,11 +13,11 @@
 #include "stm32f767xx_xdr_gpio.h"
 
 // Driver Private APIs
-static void XDR_GPIO_Clock_Enable(XDR_GPIO_Handle *GPIO_Handle);
-static void XDR_GPIO_Clock_Disable(XDR_GPIO_Handle *GPIO_Handle);
+static void XDR_GPIO_Clock_Enable(const XDR_GPIO_Handle *GPIO_Handle);
+static void XDR_GPIO_Clock_Disable(const XDR_GPIO_Handle *GPIO_Handle);
 
 // Clock Control APIs for GPIO
-static void XDR_GPIO_Clock_Enable(XDR_GPIO_Handle *GPIO_Handle){
+static void XDR_GPIO_Clock_Enable(const XDR_GPIO_Handle *GPIO_Handle){
 
     switch (GPIO_Handle->XDR_PortId)
     {
@@ -37,7 +37,7 @@ static void XDR_GPIO_Clock_Enable(XDR_GPIO_Handle *GPIO_Handle){
 
 }
 
-static void XDR_GPIO_Clock_Disable(XDR_GPIO_Handle *GPIO_Handle)
+static void XDR_GPIO_Clock_Disable(const XDR_GPIO_Handle *GPIO_Handle)
 {
 
     switch (GPIO_Handle->XDR_PortId)
@@ -131,7 +131,7 @@ void XDR_GPIO_DeInit(XDR_GPIO_Handle *GPIO_Handle) {
 }
 
 // GPIO Read for Pin or Port APIs
-uint8_t XDR_GPIO_Read_Pin(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin){
+uint8_t XDR_GPIO_Read_Pin(const GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin){
 
 	uint8_t value ;
 	value = (uint8_t)((XDR_GPIOx->IDR >> XDR_GPIO_Pin)& GPIO_PIN_SET);

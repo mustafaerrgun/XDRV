@@ -49,7 +49,7 @@ void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle);
 void XDR_GPIO_DeInit(XDR_GPIO_Handle *GPIO_Handle);
 
 // GPIO Read and Write APIs
-uint8_t XDR_GPIO_Read_Pin(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin);
+uint8_t XDR_GPIO_Read_Pin(const GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin);
 uint16_t XDR_GPIO_Read_Port(GPIO_TypeDef *XDR_GPIOx);
 void XDR_GPIO_Write_Pin(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin, uint8_t XDR_Value);
 void XDR_GPIO_Write_Port(GPIO_TypeDef *XDR_GPIOx, uint16_t XDR_Value);
