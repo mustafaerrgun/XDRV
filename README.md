@@ -9,7 +9,7 @@ It is designed without HAL or LL, focusing on:
 
 - Full control of registers
 - Clear peripheral abstraction
-- Educational value (learning STM32 at register level)
+- Continuous Integration (CI) pipeline with MISRA compliance checks
 
 The project currently implements:
 
@@ -101,10 +101,10 @@ Flash latency is automatically configured based on the selected **SYSCLK** frequ
 ### Completed
 - GPIO Driver  
 - RCC Driver  
-- Minimal CMSIS Hardware Layer  
+- Minimal CMSIS Hardware Layer 
+- MISRA Compliance Checker Integration 
 
 ### In Progress / Planned
-- MISRA Compliance Checker Integration
 - USART Driver  
 - SPI Driver  
-- I2C Driver 
+- I2C Driver

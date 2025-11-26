@@ -27,5 +27,25 @@ jobs:
             -mcpu=cortex-m7 -mthumb \
             -std=c11 -Wall -Wextra -Werror \
             -I./Drivers/Inc \
-            ./Drivers/Src/*.c \
+            ./Drivers/Src/*.c
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Install cppcheck
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+
+      # 3) Run MISRA check
+      - name: Run MISRA check
+        run: |
+          chmod +x ./tests/misra_check.sh
+          ./tests/misra_check.sh
 
