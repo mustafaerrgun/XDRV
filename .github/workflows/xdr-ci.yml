@@ -49,3 +49,10 @@ jobs:
           chmod +x ./tests/misra_check.sh
           ./tests/misra_check.sh
 
+      # 4) Upload MISRA report
+      - name: Upload MISRA report
+        uses: actions/upload-artifact@v3
+        with:
+          name: misra-report
+          path: ./tests/misra_report.txt
+
