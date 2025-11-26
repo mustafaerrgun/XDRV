@@ -90,7 +90,7 @@ void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle){
 	if (GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinMode == GPIO_MODE_ALTFN)
 	{
 	    uint8_t pinNumber = GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin;
-	    uint8_t afValue   = GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinAFMode;
+	    uint32_t afValue   = GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinAFMode;
 
 	    // AFRL: pins 0..7
 	    if (pinNumber <= GPIO_PIN_NO_7)
@@ -108,7 +108,7 @@ void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle){
 	}
 
 }
-void XDR_GPIO_DeInit(XDR_GPIO_Handle *GPIO_Handle) {
+void XDR_GPIO_DeInit(const XDR_GPIO_Handle *GPIO_Handle) {
 
 	// Disable the Peripheral Clock
 	XDR_GPIO_Clock_Disable(GPIO_Handle);

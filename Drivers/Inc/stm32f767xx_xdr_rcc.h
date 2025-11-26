@@ -54,11 +54,11 @@ typedef struct{
 
 
 
-#define XDR_RESET  0UL
-#define XDR_SET    1UL
+#define XDR_RESET  0U
+#define XDR_SET    1U
 
-#define XDR_HSI_CLOCK 0UL
-#define XDR_PLL_CLOCK 2UL
+#define XDR_HSI_CLOCK 0U
+#define XDR_PLL_CLOCK 2U
 
 // HSI clock frequency 16MHz
 #define XDR_HSI_VALUE 16000000
@@ -108,11 +108,11 @@ typedef struct{
 #define XDR_RCC_CFGR_PPRE1   10U
 #define XDR_RCC_CFGR_PPRE2   13U
 
-#define XDR_RCC_CFGR_SW_MASK     (0x3U << XDR_RCC_CFGR_SW)
-#define XDR_RCC_CFGR_SWS_MASK    (0x3U << XDR_RCC_CFGR_SWS)
-#define XDR_RCC_CFGR_HPRE_MASK   (0xFU << XDR_RCC_CFGR_HPRE)
-#define XDR_RCC_CFGR_PPRE1_MASK  (0x7U << XDR_RCC_CFGR_PPRE1)
-#define XDR_RCC_CFGR_PPRE2_MASK  (0x7U << XDR_RCC_CFGR_PPRE2)
+#define XDR_RCC_CFGR_SW_MASK     (0x3UL << XDR_RCC_CFGR_SW)
+#define XDR_RCC_CFGR_SWS_MASK    (0x3UL << XDR_RCC_CFGR_SWS)
+#define XDR_RCC_CFGR_HPRE_MASK   (0xFUL << XDR_RCC_CFGR_HPRE)
+#define XDR_RCC_CFGR_PPRE1_MASK  (0x7UL << XDR_RCC_CFGR_PPRE1)
+#define XDR_RCC_CFGR_PPRE2_MASK  (0x7UL << XDR_RCC_CFGR_PPRE2)
 
 
 /** Flash Latency
