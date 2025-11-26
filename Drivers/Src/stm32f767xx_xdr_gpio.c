@@ -66,20 +66,20 @@ void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle){
 
 
 	// Configure GPIO port mode register
-	GPIO_Handle->XDR_GPIOx->MODER &= ~(0x3UL << (2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
+	GPIO_Handle->XDR_GPIOx->MODER &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
 	GPIO_Handle->XDR_GPIOx->MODER |= (GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinMode
-									<< 	(2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
+									<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
 
 
 	// Configure GPIO port output speed register
-	GPIO_Handle->XDR_GPIOx->OSPEEDR  &= ~(0x3UL << (2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
+	GPIO_Handle->XDR_GPIOx->OSPEEDR  &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
 	GPIO_Handle->XDR_GPIOx->OSPEEDR  |= ((uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinOSpeed
-										<< 	(2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
+										<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
 
 	// Configure GPIO port pull-up/pull-down register
-	GPIO_Handle->XDR_GPIOx->PUPDR  &= ~(0x3UL << (2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
+	GPIO_Handle->XDR_GPIOx->PUPDR  &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
 	GPIO_Handle->XDR_GPIOx->PUPDR  |= ((uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinPUPDType
-										<< 	(2U * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
+										<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
 
 	// Configure GPIO port output type register
 	GPIO_Handle->XDR_GPIOx->OTYPER &= ~(0x1UL << (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin) ;
@@ -95,15 +95,15 @@ void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle){
 	    // AFRL: pins 0..7
 	    if (pinNumber <= GPIO_PIN_NO_7)
 	    {
-	        GPIO_Handle->XDR_GPIOx->AFR[0] &= ~(0xFUL << (4U * (uint32_t)pinNumber));
-	        GPIO_Handle->XDR_GPIOx->AFR[0] |=  (afValue << (4U * (uint32_t)pinNumber));
+	        GPIO_Handle->XDR_GPIOx->AFR[0] &= ~(0xFUL << (4UL * (uint32_t)pinNumber));
+	        GPIO_Handle->XDR_GPIOx->AFR[0] |=  (afValue << (4UL * (uint32_t)pinNumber));
 	    }
 	    // AFRH: pins 8..15
 	    else
 	    {
 	        uint8_t shift = pinNumber - GPIO_PIN_NO_8;
-	        GPIO_Handle->XDR_GPIOx->AFR[1] &= ~(0xFUL << (4U * (uint32_t)shift));
-	        GPIO_Handle->XDR_GPIOx->AFR[1] |=  (afValue << (4U * (uint32_t)shift));
+	        GPIO_Handle->XDR_GPIOx->AFR[1] &= ~(0xFUL << (4UL * (uint32_t)shift));
+	        GPIO_Handle->XDR_GPIOx->AFR[1] |=  (afValue << (4UL * (uint32_t)shift));
 	    }
 	}
 

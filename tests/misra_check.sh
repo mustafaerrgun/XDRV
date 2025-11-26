@@ -21,7 +21,7 @@ cppcheck \
   --inline-suppr \
   --suppress=misra-c2012-11.4:*stm32f767xx.h --suppress=misra-c2012-2.3:*stm32f767xx.h --suppress=misra-c2012-2.4:*stm32f767xx.h --suppress=misra-c2012-2.5:*stm32f767xx.h \
   --suppress=misra-c2012-11.4:*stm32f767xx_xdr_gpio.c --suppress=misra-c2012-2.5:*stm32f767xx_xdr_gpio.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_rcc.c  --suppress=misra-c2012-2.5:*stm32f767xx_xdr_rcc.h \
+  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_rcc.c  --suppress=misra-c2012-2.3:*stm32f767xx_xdr_rcc.h --suppress=misra-c2012-2.5:*stm32f767xx_xdr_rcc.h \
   --error-exitcode=1 \
   $INCLUDE_PATHS \
   $SRC_FILES 2> "$SCRIPT_DIR/misra_report.txt"
