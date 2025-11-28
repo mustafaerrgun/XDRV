@@ -12,23 +12,23 @@
 #include "stm32f767xx.h"
 
 typedef enum {
-    XDR_AHB_DIV1  = 0x0,
-    XDR_AHB_DIV2  = 0x8,
-    XDR_AHB_DIV4  = 0x9,
-    XDR_AHB_DIV8  = 0xA,
-    XDR_AHB_DIV16 = 0xB,
-    XDR_AHB_DIV64 = 0xC,
-    XDR_AHB_DIV128= 0xD,
-    XDR_AHB_DIV256= 0xE,
-    XDR_AHB_DIV512= 0xF
+    XDR_AHB_DIV1  = 0x0U,
+    XDR_AHB_DIV2  = 0x8U,
+    XDR_AHB_DIV4  = 0x9U,
+    XDR_AHB_DIV8  = 0xAU,
+    XDR_AHB_DIV16 = 0xBU,
+    XDR_AHB_DIV64 = 0xCU,
+    XDR_AHB_DIV128= 0xDU,
+    XDR_AHB_DIV256= 0xEU,
+    XDR_AHB_DIV512= 0xFU
 } XDR_AHB_Prescaler;
 
 typedef enum {
-    XDR_APB_DIV1  = 0x0,
-    XDR_APB_DIV2  = 0x4,
-    XDR_APB_DIV4  = 0x5,
-    XDR_APB_DIV8  = 0x6,
-    XDR_APB_DIV16 = 0x7
+    XDR_APB_DIV1  = 0x0U,
+    XDR_APB_DIV2  = 0x4U,
+    XDR_APB_DIV4  = 0x5U,
+    XDR_APB_DIV8  = 0x6U,
+    XDR_APB_DIV16 = 0x7U
 } XDR_APB_Prescaler;
 
 typedef enum {
@@ -110,9 +110,9 @@ typedef struct{
 
 #define XDR_RCC_CFGR_SW_MASK     (0x3U << XDR_RCC_CFGR_SW)
 #define XDR_RCC_CFGR_SWS_MASK    (0x3U << XDR_RCC_CFGR_SWS)
-#define XDR_RCC_CFGR_HPRE_MASK   (0xFU << XDR_RCC_CFGR_HPRE)
-#define XDR_RCC_CFGR_PPRE1_MASK  (0x7U << XDR_RCC_CFGR_PPRE1)
-#define XDR_RCC_CFGR_PPRE2_MASK  (0x7U << XDR_RCC_CFGR_PPRE2)
+#define XDR_RCC_CFGR_HPRE_MASK   (0xFUL << XDR_RCC_CFGR_HPRE)
+#define XDR_RCC_CFGR_PPRE1_MASK  (0x7UL << XDR_RCC_CFGR_PPRE1)
+#define XDR_RCC_CFGR_PPRE2_MASK  (0x7UL << XDR_RCC_CFGR_PPRE2)
 
 
 /** Flash Latency

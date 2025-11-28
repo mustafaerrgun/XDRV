@@ -170,7 +170,7 @@ uint32_t XDR_Get_SysClock(XDR_RCC_Handle *RCC_Handle){
             				(pllcfgr >> XDR_RCC_PLLCFGR_PLLP) & XDR_RCC_PLLCFGR_PLLP_MASK;
 
             /* PLLP is encoded: 0 → 2, 1 → 4, 2 → 6, 3 → 8 */
-            uint32_t pllp = (pllp_bits + XDR_SET) * XDR_PLL_CLOCK;
+            uint32_t pllp = (uint32_t)((pllp_bits + XDR_SET) * XDR_PLL_CLOCK);
 
             /* 4) Compute VCO and SYSCLK
              * VCO = (pll_src_freq / PLLM) * PLLN
@@ -191,21 +191,21 @@ uint32_t XDR_Get_SysClock(XDR_RCC_Handle *RCC_Handle){
 
 uint32_t XDR_Get_HCLK(XDR_RCC_Handle *RCC_Handle){
 
-	uint32_t hclk = 0;
-	uint32_t ahb_prescaler=0;
+	uint32_t hclk = 0U;
+	uint32_t ahb_prescaler = 0U;
 
     switch (RCC_Handle->XDR_RCC_Config.AHB_Prescaler)
     {
-        case XDR_AHB_DIV1:    ahb_prescaler = 1UL;   break;
-        case XDR_AHB_DIV2:    ahb_prescaler = 2UL;   break;
-        case XDR_AHB_DIV4:    ahb_prescaler = 4UL;   break;
-        case XDR_AHB_DIV8:    ahb_prescaler = 8UL;   break;
-        case XDR_AHB_DIV16:   ahb_prescaler = 16UL;  break;
-        case XDR_AHB_DIV64:   ahb_prescaler = 64UL;  break;
-        case XDR_AHB_DIV128:  ahb_prescaler = 128UL; break;
-        case XDR_AHB_DIV256:  ahb_prescaler = 256UL; break;
-        case XDR_AHB_DIV512:  ahb_prescaler = 512UL; break;
-        default: 			  ahb_prescaler = 1UL;   break;
+        case XDR_AHB_DIV1:    ahb_prescaler = 1U;   break;
+        case XDR_AHB_DIV2:    ahb_prescaler = 2U;   break;
+        case XDR_AHB_DIV4:    ahb_prescaler = 4U;   break;
+        case XDR_AHB_DIV8:    ahb_prescaler = 8U;   break;
+        case XDR_AHB_DIV16:   ahb_prescaler = 16U;  break;
+        case XDR_AHB_DIV64:   ahb_prescaler = 64U;  break;
+        case XDR_AHB_DIV128:  ahb_prescaler = 128U; break;
+        case XDR_AHB_DIV256:  ahb_prescaler = 256U; break;
+        case XDR_AHB_DIV512:  ahb_prescaler = 512U; break;
+        default: 			  ahb_prescaler = 1U;   break;
     }
 
 	hclk = XDR_Get_SysClock(RCC_Handle) / ahb_prescaler;
@@ -215,7 +215,7 @@ uint32_t XDR_Get_HCLK(XDR_RCC_Handle *RCC_Handle){
 
 uint32_t XDR_Get_PCLK1(XDR_RCC_Handle *RCC_Handle){
 
-	uint32_t pclk1 = 0;
+	uint32_t pclk1 = 0U;
 	uint32_t hclk = XDR_Get_HCLK(RCC_Handle);
 	uint32_t pclk1_prescaler  = XDR_RCC_APBPrescaler(RCC_Handle->XDR_RCC_Config.APB1_Prescaler);
 
@@ -239,16 +239,16 @@ uint32_t XDR_Get_PCLK2(XDR_RCC_Handle *RCC_Handle){
 
 static uint32_t XDR_RCC_APBPrescaler(uint32_t apb_prescaler)
 {
-    uint32_t div;
+    uint32_t div = 0U;
 
     switch (apb_prescaler)
     {
-        case XDR_APB_DIV1:  div = 1UL;  break;
-        case XDR_APB_DIV2:  div = 2UL;  break;
-        case XDR_APB_DIV4:  div = 4UL;  break;
-        case XDR_APB_DIV8:  div = 8UL;  break;
-        case XDR_APB_DIV16: div = 16UL; break;
-        default:            div = 1UL;  break;
+        case XDR_APB_DIV1:  div = 1U;  break;
+        case XDR_APB_DIV2:  div = 2U;  break;
+        case XDR_APB_DIV4:  div = 4U;  break;
+        case XDR_APB_DIV8:  div = 8U;  break;
+        case XDR_APB_DIV16: div = 16U; break;
+        default:            div = 1U;  break;
     }
 
     return div;
