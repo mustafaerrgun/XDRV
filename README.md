@@ -19,7 +19,7 @@ The project currently implements:
 The drivers rely on a custom reduced CMSIS-style header ([stm32f767xx.h](Drivers/Inc/stm32f767xx.h)) which defines all relevant register maps.
 
 
-I use the **STM32 Nucleo-144** development board with the STM32F767ZI MCU for testing the drivers.
+**STM32 Nucleo-144** development board is being used with the STM32F767ZI MCU for testing the drivers.
 
 
 <p align="center">
