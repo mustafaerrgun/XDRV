@@ -16,6 +16,7 @@ static void XDR_Enable_ClockSource(XDR_RCC_Handle *RCC_Handle);
 static void XDR_RCC_ConfigPLL(XDR_RCC_Handle *RCC_Handle);
 static void XDR_RCC_ConfigBusClocks(XDR_RCC_Handle *RCC_Handle);
 static void XDR_RCC_SelectSystemClock(XDR_RCC_Handle *RCC_Handle);
+static uint32_t XDR_RCC_APBPrescaler(uint32_t apb_prescaler);
 
 void XDR_RCC_Init(XDR_RCC_Handle *RCC_Handle){
 
@@ -46,11 +47,11 @@ static void XDR_Enable_ClockSource(XDR_RCC_Handle *RCC_Handle){
         // 1) Configure PLLCFGR
     	XDR_RCC_ConfigPLL(RCC_Handle);
         // 2) set PLLON
-    	RCC_Handle->XDR_RCC->CR |= (1UL << XDR_RCC_CR_PLLON);
+    	RCC_Handle->XDR_RCC->CR |= (XDR_SET << XDR_RCC_CR_PLLON);
         // 3) wait PLLRDY
-    	while(!(RCC_Handle->XDR_RCC->CR & (1UL  <<XDR_RCC_CR_PLLRDY))) { /* wait for PLL ready */ }
+    	while(!(RCC_Handle->XDR_RCC->CR & (XDR_SET<<XDR_RCC_CR_PLLRDY))) { /* wait for PLL ready */ }
         break;
-    
+
     default:
         break;
     }
@@ -65,11 +66,11 @@ static void XDR_RCC_ConfigPLL(XDR_RCC_Handle *RCC_Handle){
     while (!(RCC_Handle->XDR_RCC->CR & (XDR_SET << XDR_RCC_CR_HSIRDY))) { /* wait for HSI ready */ }
 
     // 2) Clear PLLON, wait PLLRDY = 0
- 	RCC_Handle->XDR_RCC->CR &= ~(1UL << XDR_RCC_CR_PLLON);
+ 	RCC_Handle->XDR_RCC->CR &= ~(XDR_SET << XDR_RCC_CR_PLLON);
 
     /* MISRA deviation: Waiting for hardware PLL lock. Condition changes in hardware. */
     /* cppcheck-suppress misra-c2012-14.4 */
- 	while((RCC_Handle->XDR_RCC->CR & (1UL << XDR_RCC_CR_PLLRDY))) { /* wait for PLL not ready */ }
+ 	while((RCC_Handle->XDR_RCC->CR & (XDR_SET << XDR_RCC_CR_PLLRDY))) { /* wait for PLL not ready */ }
 
     // 3) Clear flash latency and insert hardcoded PLLCFGR values into register
  	XDR_FLASH_WAIT_CLEAR();
@@ -94,7 +95,7 @@ static void XDR_RCC_ConfigPLL(XDR_RCC_Handle *RCC_Handle){
         	RCC_Handle->XDR_RCC->PLLCFGR = XDR_RCC_PLLCFGR_216MHZ;
         	XDR_FLASH_WAIT_216MHZ();
             break;
-        
+
         default:
             break;
     }
@@ -185,7 +186,70 @@ uint32_t XDR_Get_SysClock(XDR_RCC_Handle *RCC_Handle){
             sysclk = 0;
             break;
     }
-
     return sysclk;
+}
 
+uint32_t XDR_Get_HCLK(XDR_RCC_Handle *RCC_Handle){
+
+	uint32_t hclk = 0;
+	uint32_t ahb_prescaler=0;
+
+    switch (RCC_Handle->XDR_RCC_Config.AHB_Prescaler)
+    {
+        case XDR_AHB_DIV1:    ahb_prescaler = 1UL;   break;
+        case XDR_AHB_DIV2:    ahb_prescaler = 2UL;   break;
+        case XDR_AHB_DIV4:    ahb_prescaler = 4UL;   break;
+        case XDR_AHB_DIV8:    ahb_prescaler = 8UL;   break;
+        case XDR_AHB_DIV16:   ahb_prescaler = 16UL;  break;
+        case XDR_AHB_DIV64:   ahb_prescaler = 64UL;  break;
+        case XDR_AHB_DIV128:  ahb_prescaler = 128UL; break;
+        case XDR_AHB_DIV256:  ahb_prescaler = 256UL; break;
+        case XDR_AHB_DIV512:  ahb_prescaler = 512UL; break;
+        default: 			  ahb_prescaler = 1UL;   break;
+    }
+
+	hclk = XDR_Get_SysClock(RCC_Handle) / ahb_prescaler;
+
+	return hclk;
+}
+
+uint32_t XDR_Get_PCLK1(XDR_RCC_Handle *RCC_Handle){
+
+	uint32_t pclk1 = 0;
+	uint32_t hclk = XDR_Get_HCLK(RCC_Handle);
+	uint32_t pclk1_prescaler  = XDR_RCC_APBPrescaler(RCC_Handle->XDR_RCC_Config.APB1_Prescaler);
+
+	pclk1 = hclk / pclk1_prescaler;
+
+	return pclk1;
+
+}
+
+uint32_t XDR_Get_PCLK2(XDR_RCC_Handle *RCC_Handle){
+
+	uint32_t pclk2 = 0;
+	uint32_t hclk = XDR_Get_HCLK(RCC_Handle);
+	uint32_t pclk2_prescaler  = XDR_RCC_APBPrescaler(RCC_Handle->XDR_RCC_Config.APB2_Prescaler);
+
+    pclk2 = hclk / pclk2_prescaler;
+
+	return pclk2;
+
+}
+
+static uint32_t XDR_RCC_APBPrescaler(uint32_t apb_prescaler)
+{
+    uint32_t div;
+
+    switch (apb_prescaler)
+    {
+        case XDR_APB_DIV1:  div = 1UL;  break;
+        case XDR_APB_DIV2:  div = 2UL;  break;
+        case XDR_APB_DIV4:  div = 4UL;  break;
+        case XDR_APB_DIV8:  div = 8UL;  break;
+        case XDR_APB_DIV16: div = 16UL; break;
+        default:            div = 1UL;  break;
+    }
+
+    return div;
 }
