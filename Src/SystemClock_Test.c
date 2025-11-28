@@ -23,6 +23,9 @@ int main(void)
     XDR_RCC_Init(&testHandle);
 
     volatile uint32_t system_clock = XDR_Get_SysClock(&testHandle);
+    volatile uint32_t ahb_clock = XDR_Get_HCLK(&testHandle);
+    volatile uint32_t apb1_clock = XDR_Get_PCLK1(&testHandle);
+    volatile uint32_t apb2_clock = XDR_Get_PCLK2(&testHandle);
 
 
 	while(1){
