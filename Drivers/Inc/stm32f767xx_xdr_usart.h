@@ -78,7 +78,7 @@ typedef struct{
 
 // Macrod for USART BRR
 #define XDR_USART_BRR_Pos			4U
-#define XDR_USART_BRR_Over16Mask	0x0FUL
+#define XDR_USART_BRR_Over16Mask	0x0FU
 
 #define XDR_USART_OVERSAMPLING_16   0UL
 
