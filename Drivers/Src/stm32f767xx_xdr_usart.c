@@ -63,13 +63,13 @@ static void XDR_USART_Clock_Enable(XDR_USART_Handle *USART_Handle){
 
 static uint32_t XDR_USART_BRR_Calculation(XDR_USART_Handle *USART_Handle){
 
-	uint32_t apb_clock = 0UL;
+	uint32_t apb_clock = 0U;
 	uint32_t baud      = USART_Handle->XDR_USART_Config.XDR_USART_BaudRate;
 
-	uint32_t mantissa = 0UL;
-	uint32_t fraction = 0UL;
-	uint32_t usartdiv = 0UL;
-	uint32_t brr = 0UL;
+	uint32_t mantissa = 0U;
+	uint32_t fraction = 0U;
+	uint32_t usartdiv = 0U;
+	uint32_t brr = 0U;
 
 	switch(USART_Handle->XDR_USART_Instance)
 	{
