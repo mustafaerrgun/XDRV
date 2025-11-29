@@ -249,8 +249,10 @@ typedef struct
 #define I2C2                ((I2C_TypeDef *) I2C2_BASE)
 #define SPI2                ((SPI_TypeDef *) SPI2_BASE)
 #define SPI3                ((SPI_TypeDef *) SPI3_BASE)
+#define USART1				((USART_TypeDef *) USART1_BASE)
 #define USART2              ((USART_TypeDef *) USART2_BASE)
 #define USART3              ((USART_TypeDef *) USART3_BASE)
+#define USART6				((USART_TypeDef *) USART6_BASE)
 #define SYSCFG              ((SYSCFG_TypeDef *) SYSCFG_BASE)
 #define EXTI                ((EXTI_TypeDef *) EXTI_BASE)
 #define GPIOA               ((GPIO_TypeDef *) GPIOA_BASE)
@@ -285,12 +287,6 @@ typedef struct
 	#define SPI5_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 20) )
 	#define SPI6_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 21) )
 
-	//Clock enable macros for USARTx
-	#define USART1_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 4) )
-	#define USART2_CLOCK_ENABLE()	(RCC->APB1ENR |= (1 << 17) )
-	#define USART3_CLOCK_ENABLE()	(RCC->APB1ENR |= (1 << 18) )
-	#define USART6_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 5) )
-
 	// Clock enable macro for SYSCFG
 	#define SYSCFG_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 14) )
 
@@ -310,12 +306,6 @@ typedef struct
 	#define SPI4_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 13) )
 	#define SPI5_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 20) )
 	#define SPI6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 21) )
-
-	// Clock disable macros for USARTx
-	#define USART1_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 4) )
-	#define USART2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 17) )
-	#define USART3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 18) )
-	#define USART6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 5) )
 
 	// clock disable macro for SYSCFG
 	#define SYSCFG_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 14) )
