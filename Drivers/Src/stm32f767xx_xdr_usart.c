@@ -80,9 +80,9 @@ static uint32_t XDR_USART_BRR_Calculation(XDR_USART_Handle *USART_Handle){
 		default: break;
 	}
 
-	usartdiv = (apb_clock + (baud / 2UL)) / baud;
-	mantissa = usartdiv / 16UL;
-	fraction = usartdiv % 16UL;
+	usartdiv = (apb_clock + (baud / 2U)) / baud;
+	mantissa = usartdiv / 16U;
+	fraction = usartdiv % 16U;
 	brr = (mantissa << XDR_USART_BRR_Pos) | (fraction & XDR_USART_BRR_Over16Mask);
 
 	return brr;
