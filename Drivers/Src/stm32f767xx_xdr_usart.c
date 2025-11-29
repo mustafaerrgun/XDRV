@@ -13,7 +13,7 @@
 
 // Private APIs
 static void XDR_USART_Clock_Enable(xdr_usart *xdr_usart);
-static void XDR_USART_GPIO_Init(xdr_usart *xdr_usart);
+static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart);
 static uint32_t XDR_USART_BRR_Calculation(xdr_usart *xdr_usart);
 
 
@@ -43,7 +43,7 @@ void XDR_USART_Init(xdr_usart *xdr_usart){
 
 }
 
-static void XDR_USART_GPIO_Init(xdr_usart *xdr_usart){
+static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart){
 
     XDR_GPIO_Handle gpio_tx;
     XDR_GPIO_Handle gpio_rx;
