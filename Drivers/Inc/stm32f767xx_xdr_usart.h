@@ -18,40 +18,14 @@ typedef enum
 	XDR_USART2,
 	XDR_USART3,
 	XDR_USART6
-}XDR_USART_Instance;
-
-typedef enum
-{
-	XDR_USART_WORDLENGTH_7B,
-    XDR_USART_WORDLENGTH_8B,
-    XDR_USART_WORDLENGTH_9B
-} XDR_USART_WordLength;
-
-typedef enum
-{
-    XDR_USART_OVERSAMPLING_16 = 0UL,
-    XDR_USART_OVERSAMPLING_8  = 1UL
-} XDR_USART_Oversamp;
-
-typedef enum
-{
-    XDR_USART_MODE_RX,
-    XDR_USART_MODE_TX,
-    XDR_USART_MODE_TX_RX
-} XDR_USART_Mode;
+}xdr_usart_instance;
 
 typedef struct{
-	uint32_t 			  XDR_USART_BaudRate;
-	XDR_USART_WordLength  XDR_USART_WordLength;
-	XDR_USART_Mode        XDR_USART_Mode;
-}XDR_USART_Config;
-
-typedef struct{
-	USART_TypeDef 		*XDR_USART;
+	USART_TypeDef 		*usart;
 	XDR_RCC_Handle      *XDR_RCC_Handle;
-	XDR_USART_Instance	 XDR_USART_Instance;
-	XDR_USART_Config 	 XDR_USART_Config;
-}XDR_USART_Handle;
+	xdr_usart_instance	 xdr_usart_instance;
+	uint32_t 			 xdr_usart_baudrate;
+}xdr_usart;
 
 
 // Macros for USART CR1
@@ -104,8 +78,8 @@ typedef struct{
 #define USART6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1UL << 5U ) )
 
 // Driver APIs
-void XDR_USART_Init(XDR_USART_Handle *USART_Handle);
-void XDR_USART_Send(XDR_USART_Handle *USART_Handle, uint8_t data);
-uint8_t XDR_USART_Receive(XDR_USART_Handle *USART_Handle);
+void XDR_USART_Init(xdr_usart *xdr_usart);
+void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
+uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 
 #endif /* STM32F407XX__XDR_USART_DRIVER_H_ */
