@@ -13,13 +13,58 @@
 #include "stm32f767xx_xdr_gpio.h"
 
 // Driver Private APIs
-static void XDR_GPIO_Clock_Enable(const XDR_GPIO_Handle *GPIO_Handle);
-static void XDR_GPIO_Clock_Disable(const XDR_GPIO_Handle *GPIO_Handle);
+static void XDR_GPIO_Clock_Enable(const xdr_gpio *xdr_gpio);
+static void XDR_GPIO_Clock_Disable(const xdr_gpio *xdr_gpio);
+
+// GPIO Init and DeInit APIs
+void XDR_GPIO_Init(xdr_gpio *xdr_gpio){
+
+	// Enable the Peripheral Clock
+	XDR_GPIO_Clock_Enable(xdr_gpio);
+
+
+	// Configure GPIO port mode register
+	xdr_gpio->xdr_gpiox->MODER &= ~(0x3U << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
+	xdr_gpio->xdr_gpiox->MODER |= (xdr_gpio->xdr_gpio_pinMode
+							   << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
+
+
+	// Configure GPIO port output speed as high speed
+	xdr_gpio->xdr_gpiox->OSPEEDR  &= ~(0x3U << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin)) ;
+	xdr_gpio->xdr_gpiox->OSPEEDR  |= (GPIO_SPEED_HIGH << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
+
+	// Configure GPIO port pull-up/pull-down register
+	xdr_gpio->xdr_gpiox->PUPDR  &= ~(0x3U << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin)) ;
+	xdr_gpio->xdr_gpiox->PUPDR  |= ((uint32_t)xdr_gpio->xdr_gpio_pinPuPd
+								<< 	(2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
+
+}
+void XDR_GPIO_DeInit(const xdr_gpio *xdr_gpio) {
+
+	// Disable the Peripheral Clock
+	XDR_GPIO_Clock_Disable(xdr_gpio);
+
+	switch (xdr_gpio->xdr_gpio_portId)
+    {
+        case XDR_GPIO_PORT_A: GPIOA_REG_RESET(); break;
+        case XDR_GPIO_PORT_B: GPIOB_REG_RESET(); break;
+		case XDR_GPIO_PORT_C: GPIOC_REG_RESET(); break;
+        case XDR_GPIO_PORT_D: GPIOD_REG_RESET(); break;
+		case XDR_GPIO_PORT_E: GPIOE_REG_RESET(); break;
+        case XDR_GPIO_PORT_F: GPIOF_REG_RESET(); break;
+		case XDR_GPIO_PORT_G: GPIOG_REG_RESET(); break;
+        case XDR_GPIO_PORT_H: GPIOH_REG_RESET(); break;
+		case XDR_GPIO_PORT_I: GPIOI_REG_RESET(); break;
+        case XDR_GPIO_PORT_J: GPIOJ_REG_RESET(); break;
+		case XDR_GPIO_PORT_K: GPIOK_REG_RESET(); break;
+        default: break;
+    }
+}
 
 // Clock Control APIs for GPIO
-static void XDR_GPIO_Clock_Enable(const XDR_GPIO_Handle *GPIO_Handle){
+static void XDR_GPIO_Clock_Enable(const xdr_gpio *xdr_gpio){
 
-    switch (GPIO_Handle->XDR_PortId)
+    switch (xdr_gpio->xdr_gpio_portId)
     {
         case XDR_GPIO_PORT_A: GPIOA_CLOCK_ENABLE(); break;
         case XDR_GPIO_PORT_B: GPIOB_CLOCK_ENABLE(); break;
@@ -37,10 +82,9 @@ static void XDR_GPIO_Clock_Enable(const XDR_GPIO_Handle *GPIO_Handle){
 
 }
 
-static void XDR_GPIO_Clock_Disable(const XDR_GPIO_Handle *GPIO_Handle)
+static void XDR_GPIO_Clock_Disable(const xdr_gpio *xdr_gpio)
 {
-
-    switch (GPIO_Handle->XDR_PortId)
+    switch (xdr_gpio->xdr_gpio_portId)
     {
         case XDR_GPIO_PORT_A: GPIOA_CLOCK_DISABLE(); break;
         case XDR_GPIO_PORT_B: GPIOB_CLOCK_DISABLE(); break;
@@ -57,110 +101,39 @@ static void XDR_GPIO_Clock_Disable(const XDR_GPIO_Handle *GPIO_Handle)
     }
 }
 
-
-// GPIO Init and DeInit APIs
-void XDR_GPIO_Init(XDR_GPIO_Handle *GPIO_Handle){
-
-	// Enable the Peripheral Clock
-	XDR_GPIO_Clock_Enable(GPIO_Handle);
-
-
-	// Configure GPIO port mode register
-	GPIO_Handle->XDR_GPIOx->MODER &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
-	GPIO_Handle->XDR_GPIOx->MODER |= (GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinMode
-									<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
-
-
-	// Configure GPIO port output speed register
-	GPIO_Handle->XDR_GPIOx->OSPEEDR  &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
-	GPIO_Handle->XDR_GPIOx->OSPEEDR  |= ((uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinOSpeed
-										<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
-
-	// Configure GPIO port pull-up/pull-down register
-	GPIO_Handle->XDR_GPIOx->PUPDR  &= ~(0x3UL << (2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin)) ;
-	GPIO_Handle->XDR_GPIOx->PUPDR  |= ((uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinPUPDType
-										<< 	(2UL * (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin));
-
-	// Configure GPIO port output type register
-	GPIO_Handle->XDR_GPIOx->OTYPER &= ~(0x1UL << (uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin) ;
-	GPIO_Handle->XDR_GPIOx->OTYPER |= ((uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinOType
-										<< 	(uint32_t)GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin);
-
-	// Configure GPIO alternate function registers
-	if (GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinMode == GPIO_MODE_ALTFN)
-	{
-	    uint8_t pinNumber = GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_Pin;
-	    uint32_t afValue   = GPIO_Handle->XDR_GPIO_Config.XDR_GPIO_PinAFMode;
-
-	    // AFRL: pins 0..7
-	    if (pinNumber <= GPIO_PIN_NO_7)
-	    {
-	        GPIO_Handle->XDR_GPIOx->AFR[0] &= ~(0xFUL << (4UL * (uint32_t)pinNumber));
-	        GPIO_Handle->XDR_GPIOx->AFR[0] |=  (afValue << (4UL * (uint32_t)pinNumber));
-	    }
-	    // AFRH: pins 8..15
-	    else
-	    {
-	        uint8_t shift = pinNumber - GPIO_PIN_NO_8;
-	        GPIO_Handle->XDR_GPIOx->AFR[1] &= ~(0xFUL << (4UL * (uint32_t)shift));
-	        GPIO_Handle->XDR_GPIOx->AFR[1] |=  (afValue << (4UL * (uint32_t)shift));
-	    }
-	}
-
-}
-void XDR_GPIO_DeInit(const XDR_GPIO_Handle *GPIO_Handle) {
-
-	// Disable the Peripheral Clock
-	XDR_GPIO_Clock_Disable(GPIO_Handle);
-
-	switch (GPIO_Handle->XDR_PortId)
-    {
-        case XDR_GPIO_PORT_A: GPIOA_REG_RESET(); break;
-        case XDR_GPIO_PORT_B: GPIOB_REG_RESET(); break;
-		case XDR_GPIO_PORT_C: GPIOC_REG_RESET(); break;
-        case XDR_GPIO_PORT_D: GPIOD_REG_RESET(); break;
-		case XDR_GPIO_PORT_E: GPIOE_REG_RESET(); break;
-        case XDR_GPIO_PORT_F: GPIOF_REG_RESET(); break;
-		case XDR_GPIO_PORT_G: GPIOG_REG_RESET(); break;
-        case XDR_GPIO_PORT_H: GPIOH_REG_RESET(); break;
-		case XDR_GPIO_PORT_I: GPIOI_REG_RESET(); break;
-        case XDR_GPIO_PORT_J: GPIOJ_REG_RESET(); break;
-		case XDR_GPIO_PORT_K: GPIOK_REG_RESET(); break;
-        default: break;
-    }
-}
-
-// GPIO Read for Pin or Port APIs
-uint8_t XDR_GPIO_Read_Pin(const GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin){
+// GPIO Read APIs for Pin or Port
+uint8_t XDR_GPIO_Read_Pin(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin){
 
 	uint8_t value ;
-	value = (uint8_t)((XDR_GPIOx->IDR >> XDR_GPIO_Pin)& GPIO_PIN_SET);
+	value = (uint8_t)((xdr_gpio->xdr_gpiox->IDR >> xdr_gpio_pin) & GPIO_PIN_SET);
 	return value ;
 }
-uint16_t XDR_GPIO_Read_Port(GPIO_TypeDef *XDR_GPIOx) {
+uint16_t XDR_GPIO_Read_Port(xdr_gpio *xdr_gpio) {
 
 	uint16_t value ;
-	value = (uint16_t)(XDR_GPIOx->IDR ) ;
+	value = (uint16_t)(xdr_gpio->xdr_gpiox->IDR);
 	return value ;
 }
 
-// GPIO Write to Pin or Port APIs
-void XDR_GPIO_Write_Pin(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin, uint8_t XDR_Value) {
+// GPIO Write APIs for Pin or Port
+void XDR_GPIO_Write_Pin(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin, uint8_t xdr_value) {
 
-	if (XDR_Value == GPIO_PIN_SET) {
-		XDR_GPIOx->ODR |= (1UL << XDR_GPIO_Pin) ;
+	if (xdr_value == GPIO_PIN_SET) {
+		xdr_gpio->xdr_gpiox->ODR |= (1UL << xdr_gpio_pin) ;
 
 	} else {
-		XDR_GPIOx->ODR &= ~(1UL << XDR_GPIO_Pin) ;
+		xdr_gpio->xdr_gpiox->ODR &= ~(1UL << xdr_gpio_pin) ;
 	}
 }
-void XDR_GPIO_Write_Port(GPIO_TypeDef *XDR_GPIOx, uint16_t XDR_Value) {
+void XDR_GPIO_Write_Port(xdr_gpio *xdr_gpio, uint16_t xdr_value) {
 
-	XDR_GPIOx->ODR = XDR_Value ;
+	xdr_gpio->xdr_gpiox->ODR = xdr_value ;
 
 }
-void XDR_GPIO_Toggle(GPIO_TypeDef *XDR_GPIOx, uint8_t XDR_GPIO_Pin) {
 
-	XDR_GPIOx->ODR = XDR_GPIOx->ODR ^ (1UL << XDR_GPIO_Pin) ;
+// GPIO Toggle API for Pin
+void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin) {
+
+	xdr_gpio->xdr_gpiox->ODR = xdr_gpio->xdr_gpiox->ODR ^ (1UL << xdr_gpio_pin) ;
 
 }
