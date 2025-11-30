@@ -6,11 +6,12 @@
   ******************************************************************************
   */
 
-#ifndef STM32F407XX__XDR_USART_DRIVER_H_
-#define STM32F407XX__XDR_USART_DRIVER_H_
+#ifndef STM32F407XX__XDR_USART_H_
+#define STM32F407XX__XDR_USART_H_
 
 #include "stm32f767xx.h"
 #include "stm32f767xx_xdr_rcc.h"
+#include "stm32f767xx_xdr_gpio.h"
 
 typedef enum
 {
@@ -22,7 +23,6 @@ typedef enum
 
 typedef struct{
 	USART_TypeDef 		*usart;
-	XDR_RCC_Handle      *XDR_RCC_Handle;
 	xdr_usart_instance	 xdr_usart_instance;
 	uint32_t 			 xdr_usart_baudrate;
 }xdr_usart;
@@ -44,7 +44,6 @@ typedef struct{
 
 #define XDR_USART_CR1_CLEAR		0UL
 
-
 // Macros for USART ISR
 #define XDR_USART_ISR_RXNE		5U
 #define XDR_USART_ISR_TC		6U
@@ -64,6 +63,15 @@ typedef struct{
 #define XDR_USART_BAUD_115200    115200UL
 #define XDR_USART_BAUD_460800    460800UL
 
+// Macros GPIO AF bit positions for selected pins
+#define XDR_USART_GPIO_AF_PA9	4U
+#define XDR_USART_GPIO_AF_PA10	8U
+#define XDR_USART_GPIO_AF_PD5	20U
+#define XDR_USART_GPIO_AF_PD6	24U
+#define XDR_USART_GPIO_AF_PD8	0U
+#define XDR_USART_GPIO_AF_PD9	4U
+#define XDR_USART_GPIO_AF_PC6	24U
+#define XDR_USART_GPIO_AF_PC7	28U
 
 //Clock enable macros for USARTx
 #define USART1_CLOCK_ENABLE()	(RCC->APB2ENR |= (1UL << 4U ) )
@@ -82,4 +90,4 @@ void XDR_USART_Init(xdr_usart *xdr_usart);
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 
-#endif /* STM32F407XX__XDR_USART_DRIVER_H_ */
+#endif /* STM32F407XX__XDR_USART_H_ */
