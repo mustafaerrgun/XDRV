@@ -7,7 +7,6 @@ Bare-metal STM32F767 firmware drivers (GPIO, RCC, USART, I2C, SPI) built from sc
 
 It is designed without HAL or LL, focusing on:
 
-- Full control of registers
 - Clear peripheral abstraction
 - Simplified user configurations
 - Continuous Integration (CI) pipeline with MISRA compliance checks
