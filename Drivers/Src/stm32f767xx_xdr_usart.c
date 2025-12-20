@@ -48,9 +48,11 @@ static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart){
 
 	gpio_tx.xdr_gpio_pinMode = GPIO_MODE_ALTFN;
 	gpio_tx.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
+	gpio_tx.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
 
 	gpio_rx.xdr_gpio_pinMode = GPIO_MODE_ALTFN;
 	gpio_rx.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
+	gpio_rx.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
 
     switch(xdr_usart->xdr_usart_instance){
     	case XDR_USART1:
@@ -164,6 +166,7 @@ static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart){
 	brr = (mantissa << XDR_USART_BRR_Pos) | (fraction & XDR_USART_BRR_Over16Mask);
 
 	return brr;
+
 }
 
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data){
