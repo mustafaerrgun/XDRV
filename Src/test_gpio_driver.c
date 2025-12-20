@@ -17,6 +17,7 @@ int main(void)
 	led.xdr_gpio_pin     = GPIO_PIN_NO_7;
 	led.xdr_gpio_pinMode = GPIO_MODE_OUTPUT;
 	led.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
+	led.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
 
 	XDR_GPIO_Init(&led);
 
