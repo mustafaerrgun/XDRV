@@ -12,11 +12,10 @@
 
 #include "stm32f767xx_xdr_gpio.h"
 
-// Driver Private APIs
+// Private APIs
 static void XDR_GPIO_Clock_Enable(const xdr_gpio *xdr_gpio);
-static void XDR_GPIO_Clock_Disable(const xdr_gpio *xdr_gpio);
 
-// GPIO Init and DeInit APIs
+
 void XDR_GPIO_Init(xdr_gpio *xdr_gpio){
 
 	// Enable the Peripheral Clock
@@ -28,6 +27,10 @@ void XDR_GPIO_Init(xdr_gpio *xdr_gpio){
 	xdr_gpio->xdr_gpiox->MODER |= (xdr_gpio->xdr_gpio_pinMode
 							   << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
 
+	// Configure GPIO output type register
+	xdr_gpio->xdr_gpiox->OTYPER &= ~(0x1U << ((uint32_t)xdr_gpio->xdr_gpio_pin));
+	xdr_gpio->xdr_gpiox->OTYPER |= (xdr_gpio->xdr_gpio_pinOType << ((uint32_t)xdr_gpio->xdr_gpio_pin));
+
 
 	// Configure GPIO port output speed as high speed
 	xdr_gpio->xdr_gpiox->OSPEEDR  &= ~(0x3U << (2U * (uint32_t)xdr_gpio->xdr_gpio_pin)) ;
@@ -38,27 +41,6 @@ void XDR_GPIO_Init(xdr_gpio *xdr_gpio){
 	xdr_gpio->xdr_gpiox->PUPDR  |= ((uint32_t)xdr_gpio->xdr_gpio_pinPuPd
 								<< 	(2U * (uint32_t)xdr_gpio->xdr_gpio_pin));
 
-}
-void XDR_GPIO_DeInit(const xdr_gpio *xdr_gpio) {
-
-	// Disable the Peripheral Clock
-	XDR_GPIO_Clock_Disable(xdr_gpio);
-
-	switch (xdr_gpio->xdr_gpio_portId)
-    {
-        case XDR_GPIO_PORT_A: GPIOA_REG_RESET(); break;
-        case XDR_GPIO_PORT_B: GPIOB_REG_RESET(); break;
-		case XDR_GPIO_PORT_C: GPIOC_REG_RESET(); break;
-        case XDR_GPIO_PORT_D: GPIOD_REG_RESET(); break;
-		case XDR_GPIO_PORT_E: GPIOE_REG_RESET(); break;
-        case XDR_GPIO_PORT_F: GPIOF_REG_RESET(); break;
-		case XDR_GPIO_PORT_G: GPIOG_REG_RESET(); break;
-        case XDR_GPIO_PORT_H: GPIOH_REG_RESET(); break;
-		case XDR_GPIO_PORT_I: GPIOI_REG_RESET(); break;
-        case XDR_GPIO_PORT_J: GPIOJ_REG_RESET(); break;
-		case XDR_GPIO_PORT_K: GPIOK_REG_RESET(); break;
-        default: break;
-    }
 }
 
 // Clock Control APIs for GPIO
@@ -80,25 +62,6 @@ static void XDR_GPIO_Clock_Enable(const xdr_gpio *xdr_gpio){
         default: break;
     }
 
-}
-
-static void XDR_GPIO_Clock_Disable(const xdr_gpio *xdr_gpio)
-{
-    switch (xdr_gpio->xdr_gpio_portId)
-    {
-        case XDR_GPIO_PORT_A: GPIOA_CLOCK_DISABLE(); break;
-        case XDR_GPIO_PORT_B: GPIOB_CLOCK_DISABLE(); break;
-		case XDR_GPIO_PORT_C: GPIOC_CLOCK_DISABLE(); break;
-        case XDR_GPIO_PORT_D: GPIOD_CLOCK_DISABLE(); break;
-		case XDR_GPIO_PORT_E: GPIOE_CLOCK_DISABLE(); break;
-        case XDR_GPIO_PORT_F: GPIOF_CLOCK_DISABLE(); break;
-		case XDR_GPIO_PORT_G: GPIOG_CLOCK_DISABLE(); break;
-        case XDR_GPIO_PORT_H: GPIOH_CLOCK_DISABLE(); break;
-		case XDR_GPIO_PORT_I: GPIOI_CLOCK_DISABLE(); break;
-        case XDR_GPIO_PORT_J: GPIOJ_CLOCK_DISABLE(); break;
-		case XDR_GPIO_PORT_K: GPIOK_CLOCK_DISABLE(); break;
-        default: break;
-    }
 }
 
 // GPIO Read APIs for Pin or Port
