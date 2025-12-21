@@ -14,8 +14,9 @@ It is designed without HAL or LL, focusing on:
 The project currently implements:
 
 1. **GPIO Driver** — digital I/O configuration and runtime API
-2. **RCC Driver**  — system clock configuration using HSI/PLL, AHB/APB prescalers, and flash wait-states
+2. **RCC Driver**  — system clock configuration using HSI/PLL, AHB/APB prescalers
 3. **USART Driver**  — initialization of USART peripherals, data transmission/reception, and support for multiple baud rates with hardcoded GPIO configurations
+4. **I2C Driver**  — initialization of I2C peripherals, data transmission/reception, 7-bit addressing, standard mode, only master mode and blocking-mode
 
 The drivers rely on a custom reduced CMSIS-style header ([stm32f767xx.h](Drivers/Inc/stm32f767xx.h)) which defines all relevant register maps.
 
@@ -74,7 +75,7 @@ void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin);
 - Set AHB/APB1/APB2 prescalers
 - Auto-configuration of:
   - PLL multipliers/dividers (hardcoded for stability)
-  - Required flash wait states
+  - Hardcoded flash wait states
 
 ### Supported System Clock Options
 - 16 MHz
@@ -130,7 +131,36 @@ void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 ```
 
-## 5. Implementation Notes
+## 4. XDR-USART Driver
+
+### The I2C module provides:
+
+- Initialization of I2C peripherals
+- Transmission and reception of data
+- 7-bit addressing and blocking
+- Master-mode and standard mode only
+- Hardcoded GPIO pin configurations for I2C instances
+- I2C1 -> PB8 (SCL) and PB9(SDA)
+- I2C2 -> PB10 (SCL) and PB11(SDA)
+- I2C4 -> PF14 (SCL) and PF15(SDA)
+
+```
+typedef struct{
+	I2C_TypeDef 		*i2c;
+	xdr_i2c_instance	 xdr_i2c_instance;
+}xdr_i2c;
+```
+The `xdr_i2c` structure is used to configure the I2C module, users need to select only the I2C instance(```I2C 1/2/4```).
+
+### Public APIs:
+
+```
+void XDR_I2C_Init(xdr_i2c *xdr_I2C);
+void XDR_I2C_Write(xdr_i2c *xdr_I2C, uint8_t addr7, uint8_t data);
+uint8_t XDR_I2C_Read(xdr_i2c *xdr_I2C, uint8_t addr7);
+```
+
+## 6. Implementation Notes
 
 ### Custom CMSIS Header
 
@@ -160,15 +190,15 @@ These values are applied inside the RCC driver implementation
 
 Flash latency is automatically configured based on the selected **SYSCLK** frequency.  
 
-## 6. Goals & Roadmap
+## 7. Goals & Roadmap
 
 ### Completed
 - GPIO Driver  
 - RCC Driver  
 - USART Driver
+- I2C Driver
 - Minimal CMSIS Hardware Layer 
 - MISRA Compliance Checker Integration 
 
 ### In Progress / Planned
 - SPI Driver  
-- I2C Driver
