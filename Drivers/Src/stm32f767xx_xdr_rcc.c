@@ -72,6 +72,7 @@ static void XDR_Enable_ClockSource(xdr_rcc *xdr_rcc){
 			xdr_rcc->rcc->CR |= (XDR_SET << XDR_RCC_CR_PLLON);
 			// 3) wait PLLRDY
 			while(!(xdr_rcc->rcc->CR & (XDR_SET<<XDR_RCC_CR_PLLRDY))) { }
+
 			break;
 
 		default: break;
@@ -95,6 +96,7 @@ static void XDR_RCC_ConfigPLL(xdr_rcc *xdr_rcc){
         case XDR_SYSCLK_48MHZ:
         	xdr_rcc->rcc->PLLCFGR = XDR_RCC_PLLCFGR_48MHZ;
         	XDR_FLASH_WAIT_48MHZ();
+
             break;
 
         case XDR_SYSCLK_96MHZ:
@@ -138,6 +140,7 @@ static void XDR_RCC_SelectSystemClock(xdr_rcc *xdr_rcc){
 
     // 3) Wait until SWS bits reflect new source
     while ( (xdr_rcc->rcc->CFGR & XDR_RCC_CFGR_SWS_MASK) != sws) { }
+
 }
 
 uint32_t XDR_Get_SysClock(void){
@@ -179,7 +182,7 @@ uint32_t XDR_Get_SysClock(void){
         }
 
         default:
-            sysclk = 0;
+            sysclk = XDR_HSI_VALUE;
             break;
     }
     return sysclk;
