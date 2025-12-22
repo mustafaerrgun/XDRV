@@ -131,7 +131,7 @@ void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 ```
 
-## 4. XDR-I2C Driver
+## 5. XDR-I2C Driver
 
 ### The I2C module provides:
 
