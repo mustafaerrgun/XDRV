@@ -369,6 +369,7 @@ typedef enum
 #define I2C1                ((I2C_TypeDef *) I2C1_BASE)
 #define I2C2                ((I2C_TypeDef *) I2C2_BASE)
 #define I2C4                ((I2C_TypeDef *) I2C4_BASE)
+#define SPI1                ((SPI_TypeDef *) SPI1_BASE)
 #define SPI2                ((SPI_TypeDef *) SPI2_BASE)
 #define SPI3                ((SPI_TypeDef *) SPI3_BASE)
 #define USART1				((USART_TypeDef *) USART1_BASE)
@@ -392,31 +393,8 @@ typedef enum
 #define FLASH               ((FLASH_TypeDef *) FLASH_R_BASE)
 
 
-/** Peripheral Clock Enable Macros
-  *
-  */
-
-	// Clock enable macros for SPIx
-	#define SPI1_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 12) )
-	#define SPI2_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 14) )
-	#define SPI3_CLOCK_ENABLE()		(RCC->APB1ENR |= (1 << 15) )
-	#define SPI4_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 13) )
-	#define SPI5_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 20) )
-	#define SPI6_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1 << 21) )
-
 	// Clock enable macro for SYSCFG
 	#define SYSCFG_CLOCK_ENABLE()	(RCC->APB2ENR |= (1 << 14) )
-
-/** Peripheral Clock Disable Macros
-  *
-  */
-	// Clock disable macros for SPIx
-	#define SPI1_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 12) )
-	#define SPI2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 14) )
-	#define SPI3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1 << 15) )
-	#define SPI4_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 13) )
-	#define SPI5_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 20) )
-	#define SPI6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 21) )
 
 	// clock disable macro for SYSCFG
 	#define SYSCFG_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1 << 14) )
