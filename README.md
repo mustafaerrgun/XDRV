@@ -17,6 +17,7 @@ The project currently implements:
 2. **RCC Driver**  — system clock configuration using HSI/PLL, AHB/APB prescalers
 3. **USART Driver**  — initialization of USART peripherals, data transmission/reception, and support for multiple baud rates with hardcoded GPIO configurations
 4. **I2C Driver**  — initialization of I2C peripherals, data transmission/reception, 7-bit addressing, standard mode, only master mode and blocking-mode
+5. **SPI Driver**  — initialization of only one SPI peripheral (SPI), data transmission/reception APIs, only master mode and one slave, blocking-mode
 
 The drivers rely on a custom reduced CMSIS-style header ([stm32f767xx.h](Drivers/Inc/stm32f767xx.h)) which defines all relevant register maps.
 
@@ -160,7 +161,31 @@ void XDR_I2C_Write(xdr_i2c *xdr_I2C, uint8_t addr7, uint8_t data);
 uint8_t XDR_I2C_Read(xdr_i2c *xdr_I2C, uint8_t addr7);
 ```
 
-## 6. Implementation Notes
+## 6. XDR-SPI Driver
+
+### The SPI module provides:
+
+- Initialization of SPI peripheral (SPI1)
+- Transmission and receiving APIs
+- Master-mode and only one slave
+- Hardcoded GPIO pin configurations for SPI1 
+- SCK  -> PB3 
+- MISO -> PB4 
+- MOSI -> PB5
+- CS   -> PA4
+
+In order to make it easy to configure GPIO pins for SPI, direct hardware register manipulation is used in this driver, unlike the UART and I2C drivers. Currently, this is a very simple SPI driver, but in the future, more peripherals will be implemented, and GPIO configurations will be optimized.
+
+### Public APIs:
+
+```
+void XDR_SPI_Init(void);
+void XDR_SPI_Transmit(uint8_t data);
+uint8_t XDR_SPI_Receive(void);
+```
+
+
+## 7. Implementation Notes
 
 ### Custom CMSIS Header
 
@@ -197,8 +222,7 @@ Flash latency is automatically configured based on the selected **SYSCLK** frequ
 - RCC Driver  
 - USART Driver
 - I2C Driver
+- SPI Driver
 - Minimal CMSIS Hardware Layer 
 - MISRA Compliance Checker Integration 
 
-### In Progress / Planned
-- SPI Driver  
