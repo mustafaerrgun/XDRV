@@ -20,16 +20,12 @@ jobs:
       - name: Install ARM GCC
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi
+          sudo apt-get install -y gcc-arm-none-eabi make
 
       # 3) Build XDR drivers
       - name: Compile XDR sources
         run: |
-          arm-none-eabi-gcc -c \
-            -mcpu=cortex-m7 -mthumb \
-            -std=c11 -Wall -Wextra -Werror \
-            -I./Drivers/Inc \
-            ./Drivers/Src/*.c
+          make all
 
   test:
     runs-on: ubuntu-latest
