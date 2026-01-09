@@ -8,6 +8,7 @@
 #ifndef STM32F407XX__XDR_I2C_H_
 #define STM32F407XX__XDR_I2C_H_
 
+#include <stddef.h>
 #include "stm32f767xx.h"
 #include "stm32f767xx_xdr_gpio.h"
 

@@ -1,5 +1,5 @@
 # XDR - eXperimental Driver
-Bare-metal STM32F767 firmware drivers (GPIO, RCC, USART, I2C, SPI) built from scratch. 
+Bare-metal STM32F767 firmware drivers (GPIO, RCC, USART, I2C, SPI). 
 
 ## 1. Overview
 
@@ -19,7 +19,7 @@ The project currently implements:
 4. **I2C Driver**  — initialization of I2C peripherals, data transmission/reception, 7-bit addressing, standard mode, only master mode and blocking-mode
 5. **SPI Driver**  — initialization of only one SPI peripheral (SPI1), data transmission/reception APIs, only master mode and one slave, blocking-mode
 
-The drivers rely on a custom reduced CMSIS-style header ([stm32f767xx.h](Drivers/Inc/stm32f767xx.h)) which defines all relevant register maps.
+The drivers rely on CMSIS headers [stm32f767xx.h](Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h) which defines all relevant register maps.
 
 
 **STM32 Nucleo-144** development board is being used with the STM32F767ZI MCU for testing the drivers.
@@ -187,17 +187,20 @@ uint8_t XDR_SPI_Receive(void);
 
 ## 7. Implementation Notes
 
-### Custom CMSIS Header
+### CMSIS Integration
 
-A minimal version of the STM32F767 register map is provided in [stm32f767xx.h](Drivers/Inc/stm32f767xx.h)
+The project uses standard STM32 CMSIS headers integrated in the Drivers folder:
+- Main device header: [stm32f767xx.h](Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h)
+- Core ARM headers: [Drivers/CMSIS/Include/](Drivers/CMSIS/Include/)
 
-This header includes:
+The CMSIS integration provides:
 
-- RCC, GPIO, FLASH, EXTI, SYSCFG register definitions  
+- Complete STM32F767 register definitions (RCC, GPIO, FLASH, EXTI, SYSCFG, etc.)
 - Full peripheral memory map  
-- NVIC register definitions  
+- NVIC and core ARM Cortex-M7 definitions
 - Peripheral base addresses  
-- Peripheral register structures 
+- Standard peripheral register structures
+- System initialization functions
 
 ### PLL Hardcoded Configurations
 
@@ -223,6 +226,5 @@ Flash latency is automatically configured based on the selected **SYSCLK** frequ
 - USART Driver
 - I2C Driver
 - SPI Driver
-- Minimal CMSIS Hardware Layer 
-- MISRA Compliance Checker Integration 
+- MISRA Compliance Checker Integration
 

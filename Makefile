@@ -1,11 +1,13 @@
 # Compiler and tools
 CC = arm-none-eabi-gcc
-CFLAGS = -c -mcpu=cortex-m4 -mthumb -std=gnu11 -Wall -Wextra
+CFLAGS = -c -mcpu=cortex-m7 -mthumb -std=gnu11 -Wall -Wextra -I$(PATH_CMSIS_INC) -I$(PATH_CMSIS_DEVICE_INC)
 
 # Directories
 PATH_SRC = Src
-PATH_DRV_SRC = Drivers/Src
-PATH_DRV_INC = Drivers/Inc
+PATH_DRV_SRC = Drivers/STM32F7xx_XDR_Driver/Src
+PATH_DRV_INC = Drivers/STM32F7xx_XDR_Driver/Inc
+PATH_CMSIS_INC = Drivers/CMSIS/Include
+PATH_CMSIS_DEVICE_INC = Drivers/CMSIS/Device/ST/STM32F7xx/Include
 BUILD_DIR = build
 
 # Object files
@@ -16,7 +18,7 @@ DRIVER_OBJS = $(BUILD_DIR)/stm32f767xx_xdr_gpio.o \
               $(BUILD_DIR)/stm32f767xx_xdr_usart.o
 
 # Default target - builds all object files
-all: $(DRIVER_OBJS) 
+all: $(DRIVER_OBJS)
 
 # Create build directory if it doesn't exist
 $(BUILD_DIR):
