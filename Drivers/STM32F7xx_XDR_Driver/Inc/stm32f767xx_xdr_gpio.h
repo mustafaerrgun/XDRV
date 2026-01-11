@@ -6,8 +6,8 @@
   ******************************************************************************
   */
 
-#ifndef STM32F407XX__XDR_GPIO_DRIVER_H_
-#define STM32F407XX__XDR_GPIO_DRIVER_H_
+#ifndef STM32F767XX__XDR_GPIO_DRIVER_H_
+#define STM32F767XX__XDR_GPIO_DRIVER_H_
 
 #include "stm32f767xx.h"
 
@@ -98,4 +98,4 @@ void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin);
 #define GPIOK_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1UL << 10U))
 
 
-#endif /* STM32F407XX__XDR_GPIO_DRIVER_H_ */
+#endif /* STM32F767XX__XDR_GPIO_DRIVER_H_ */
