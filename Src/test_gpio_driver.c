@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "stm32f767xx_xdr_gpio.h"
+#include "stm32f767xx_xdr_systick.h"
 
 xdr_gpio led;
 
@@ -26,7 +27,8 @@ int main(void)
 	while(1){
 
 		XDR_GPIO_Toggle(&led, led.xdr_gpio_pin);
-		for (uint32_t i = 0; i < 1000000; i++) {}
+		/*Delay for 2000ms*/
+		XDR_SysTick_Delay(2000);
 	}
 	return 0 ;
 }
