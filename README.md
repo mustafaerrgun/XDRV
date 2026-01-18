@@ -18,6 +18,7 @@ The project currently implements:
 3. **USART Driver**  — initialization of USART peripherals, data transmission/reception, and support for multiple baud rates with hardcoded GPIO configurations
 4. **I2C Driver**  — initialization of I2C peripherals, data transmission/reception, 7-bit addressing, standard mode, only master mode and blocking-mode
 5. **SPI Driver**  — initialization of only one SPI peripheral (SPI1), data transmission/reception APIs, only master mode and one slave, blocking-mode
+6. **TIM Driver**  — initialization of TIM peripherals (TIM2/3/4/5), basic timer functionality with prescaler and period configuration, timer update event handling
 
 The drivers rely on CMSIS headers [stm32f767xx.h](Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h) which defines all relevant register maps.
 
@@ -184,8 +185,34 @@ void XDR_SPI_Transmit(uint8_t data);
 uint8_t XDR_SPI_Receive(void);
 ```
 
+## 7. XDR-TIM Driver
 
-## 7. Implementation Notes
+### The TIM module provides:
+
+- Initialization of TIM peripherals (TIM2, TIM3, TIM4, TIM5)
+- Basic timer functionality with prescaler and period configuration
+- Timer update event handling and waiting
+
+The timer driver supports basic timing operations and can be used for delays, periodic tasks, and time-based applications. The timers use the APB1 clock domain.
+
+```
+typedef struct{
+TIM_TypeDef *tim;
+xdr_tim_id tim_id;
+uint32_t presc;
+uint32_t period;
+}xdr_tim;
+```
+
+The `xdr_tim` structure is used to configure the TIM module, allowing users to select the timer instance (TIM2/3/4/5), set the prescaler value, and define the auto-reload period.
+
+### Public APIs:
+
+```
+void XDR_TIM_Init(xdr_tim *xdr_tim);
+void XDR_TIM_WaitUpdate(xdr_tim *xdr_tim);
+```
+## 8. Implementation Notes
 
 ### CMSIS Integration
 
@@ -226,5 +253,6 @@ Flash latency is automatically configured based on the selected **SYSCLK** frequ
 - USART Driver
 - I2C Driver
 - SPI Driver
+- TIM Driver
 - MISRA Compliance Checker Integration
 
