@@ -16,7 +16,8 @@ DRIVER_OBJS = $(BUILD_DIR)/stm32f767xx_xdr_gpio.o \
               $(BUILD_DIR)/stm32f767xx_xdr_i2c.o \
               $(BUILD_DIR)/stm32f767xx_xdr_spi.o \
               $(BUILD_DIR)/stm32f767xx_xdr_usart.o \
-			  $(BUILD_DIR)/stm32f767xx_xdr_systick.o
+			  $(BUILD_DIR)/stm32f767xx_xdr_systick.o \
+			  $(BUILD_DIR)/stm32f767xx_xdr_tim.o
 
 # Default target - builds all object files
 all: $(DRIVER_OBJS)
@@ -44,6 +45,8 @@ $(BUILD_DIR)/stm32f767xx_xdr_usart.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_usart.c | 
 $(BUILD_DIR)/stm32f767xx_xdr_systick.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_systick.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
 
+$(BUILD_DIR)/stm32f767xx_xdr_tim.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_tim.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
 
 # Clean target to remove build directory
 clean:
