@@ -42,7 +42,10 @@ uint16_t XDR_GPIO_Read_Port(xdr_gpio *xdr_gpio);
 void XDR_GPIO_Write_Pin(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin, uint8_t xdr_value);
 void XDR_GPIO_Write_Port(xdr_gpio *xdr_gpio, uint16_t xdr_value);
 void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin);
+void XDR_GPIO_Button_EXTI_Init(void);
+void XDR_EXTI13_Callback(void);
 
+void EXTI15_10_IRQHandler(void);
 
 /* Macro definitions for GPIO Config */
 #define GPIO_PIN_RESET 	0U

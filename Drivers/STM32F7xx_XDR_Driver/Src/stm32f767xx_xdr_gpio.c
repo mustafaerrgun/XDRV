@@ -79,14 +79,19 @@ uint16_t XDR_GPIO_Read_Port(xdr_gpio *xdr_gpio) {
 }
 
 // GPIO Write APIs for Pin or Port
-void XDR_GPIO_Write_Pin(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin, uint8_t xdr_value) {
+void XDR_GPIO_Write_Pin(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin, uint8_t xdr_value)
+{
+    uint32_t bitpos = (uint32_t)xdr_gpio_pin;
 
-	if (xdr_value == GPIO_PIN_SET) {
-		xdr_gpio->xdr_gpiox->ODR |= (1UL << xdr_gpio_pin) ;
-
-	} else {
-		xdr_gpio->xdr_gpiox->ODR &= ~(1UL << xdr_gpio_pin) ;
-	}
+    if (xdr_value == GPIO_PIN_SET)
+    {
+        xdr_gpio->xdr_gpiox->BSRR = (uint32_t)(1UL << bitpos);
+    }
+    else
+    {
+        bitpos += 16U;
+        xdr_gpio->xdr_gpiox->BSRR = (uint32_t)(1UL << bitpos);
+    }
 }
 void XDR_GPIO_Write_Port(xdr_gpio *xdr_gpio, uint16_t xdr_value) {
 
@@ -99,4 +104,43 @@ void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin) {
 
 	xdr_gpio->xdr_gpiox->ODR = xdr_gpio->xdr_gpiox->ODR ^ (1UL << xdr_gpio_pin) ;
 
+}
+
+void XDR_GPIO_Button_EXTI_Init(void)
+{
+	/* Configure PC13 as input */
+	xdr_gpio button;
+	button.xdr_gpiox 		 = GPIOC;
+	button.xdr_gpio_portId  = XDR_GPIO_PORT_C;
+	button.xdr_gpio_pin     = GPIO_PIN_NO_13;
+	button.xdr_gpio_pinMode = GPIO_MODE_INPUT;
+	button.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
+	button.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
+	XDR_GPIO_Init(&button);
+
+    /*Disable global interrupts*/
+    __disable_irq();
+    /*Enable clock access to SYSCFG*/
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+    /*Select PORTC for EXTI13*/
+    SYSCFG->EXTICR[3] &= ~SYSCFG_EXTICR4_EXTI13;
+    SYSCFG->EXTICR[3] |=  SYSCFG_EXTICR4_EXTI13_PC;
+    /*Unmask EXTI13*/
+    EXTI->IMR |= EXTI_IMR_MR13;
+    /*Select falling edge trigger*/
+    EXTI->FTSR |= EXTI_FTSR_TR13;
+    /*Enable EXTI13 line in NVIC*/
+    NVIC_EnableIRQ(EXTI15_10_IRQn);
+    /*Enable global interrupts*/
+    __enable_irq();
+}
+
+void EXTI15_10_IRQHandler(void) {
+    if ((EXTI->PR & EXTI_PR_PR13) == EXTI_PR_PR13)
+    {
+        /*Clear PR flag*/
+        EXTI->PR |=EXTI_PR_PR13;
+        //Do something...
+        XDR_EXTI13_Callback();
+    }
 }
