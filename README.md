@@ -69,6 +69,18 @@ void XDR_GPIO_Write_Port(xdr_gpio *xdr_gpio, uint16_t xdr_value);
 void XDR_GPIO_Toggle(xdr_gpio *xdr_gpio, uint8_t xdr_gpio_pin);
 ```
 
+### Button EXTI Event:
+
+The GPIO driver supports a button EXTI event feature using the following APIs:
+
+```
+void XDR_GPIO_Button_EXTI_Init(void);
+void XDR_EXTI13_Callback(void);
+```
+
+- `XDR_GPIO_Button_EXTI_Init`: Configures GPIO pin PC13 as an input pin and enables the EXTI interrupt for the pin.
+- `XDR_EXTI13_Callback`: Callback function triggered when an interrupt occurs on EXTI line 13 (connected to GPIO pin PC13). Users can implement this function in their application to handle button press events.
+
 ## 3. XDR-RCC Driver
 
 ### The RCC module provides:
