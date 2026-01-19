@@ -112,6 +112,7 @@ uint32_t XDR_Get_PCLK2(void);
 - Initialization of USART peripherals
 - Transmission and reception of data
 - Support for multiple baud rates
+- Used HSI as the clock source for USARTx
 - Hardcoded GPIO pin configurations for USART instances
 - USART1/2/3/6
 
