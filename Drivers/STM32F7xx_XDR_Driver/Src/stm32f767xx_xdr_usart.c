@@ -131,10 +131,10 @@ static void XDR_USART_Clock_Enable(xdr_usart *xdr_usart){
 
     switch (xdr_usart->xdr_usart_instance)
     {
-        case XDR_USART1: USART1_CLOCK_ENABLE(); xdr_usart->usart = USART1; break;
-        case XDR_USART2: USART2_CLOCK_ENABLE(); xdr_usart->usart = USART2; break;
-		case XDR_USART3: USART3_CLOCK_ENABLE(); xdr_usart->usart = USART3; break;
-        case XDR_USART6: USART6_CLOCK_ENABLE(); xdr_usart->usart = USART6; break;
+        case XDR_USART1: USART1_CLOCK_SOURCE(); USART1_CLOCK_ENABLE(); xdr_usart->usart = USART1; break;
+        case XDR_USART2: USART2_CLOCK_SOURCE(); USART2_CLOCK_ENABLE(); xdr_usart->usart = USART2; break;
+		case XDR_USART3: USART3_CLOCK_SOURCE(); USART3_CLOCK_ENABLE(); xdr_usart->usart = USART3; break;
+        case XDR_USART6: USART6_CLOCK_SOURCE(); USART6_CLOCK_ENABLE(); xdr_usart->usart = USART6; break;
         default: break;
     }
 
@@ -143,7 +143,6 @@ static void XDR_USART_Clock_Enable(xdr_usart *xdr_usart){
 static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart){
 
 
-	uint32_t apb_clock = 0U;
 	uint32_t baud      = xdr_usart->xdr_usart_baudrate;
 
 	uint32_t mantissa = 0U;
@@ -151,16 +150,7 @@ static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart){
 	uint32_t usartdiv = 0U;
 	uint32_t brr = 0U;
 
-	switch(xdr_usart->xdr_usart_instance)
-	{
-		case XDR_USART1: case XDR_USART6:
-			apb_clock=XDR_Get_PCLK2(); break;
-		case XDR_USART2: case XDR_USART3:
-			apb_clock=XDR_Get_PCLK1(); break;
-		default: break;
-	}
-
-	usartdiv = (apb_clock + (baud / 2U)) / baud;
+	usartdiv = (XDR_HSI_CLK + (baud / 2U)) / baud;
 	mantissa = usartdiv / 16U;
 	fraction = usartdiv % 16U;
 	brr = (mantissa << XDR_USART_BRR_Pos) | (fraction & XDR_USART_BRR_Over16Mask);
@@ -168,6 +158,7 @@ static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart){
 	return brr;
 
 }
+
 
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data){
 

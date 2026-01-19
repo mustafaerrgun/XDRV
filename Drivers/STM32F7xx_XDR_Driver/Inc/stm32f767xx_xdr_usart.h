@@ -6,8 +6,8 @@
   ******************************************************************************
   */
 
-#ifndef STM32F407XX__XDR_USART_H_
-#define STM32F407XX__XDR_USART_H_
+#ifndef STM32F767XX__XDR_USART_H_
+#define STM32F767XX__XDR_USART_H_
 
 #include "stm32f767xx.h"
 #include "stm32f767xx_xdr_rcc.h"
@@ -26,6 +26,11 @@ typedef struct{
 	xdr_usart_instance	 xdr_usart_instance;
 	uint32_t 			 xdr_usart_baudrate;
 }xdr_usart;
+
+// Driver APIs
+void XDR_USART_Init(xdr_usart *xdr_usart);
+void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
+uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 
 
 // Macros for USART CR1
@@ -63,6 +68,9 @@ typedef struct{
 #define XDR_USART_BAUD_115200    115200UL
 #define XDR_USART_BAUD_460800    460800UL
 
+// Macro for Clock Source Freqeuncy
+#define XDR_HSI_CLK				16000000U
+
 // Macros GPIO AF bit positions for selected pins
 #define XDR_USART_GPIO_AF_PA9	4U
 #define XDR_USART_GPIO_AF_PA10	8U
@@ -73,21 +81,16 @@ typedef struct{
 #define XDR_USART_GPIO_AF_PC6	24U
 #define XDR_USART_GPIO_AF_PC7	28U
 
+// Clock source HSI selection macros for USARTx
+#define USART1_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 0U)  )
+#define USART2_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 2U)  )
+#define USART3_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 4U)  )
+#define USART6_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 10U) )
+
 //Clock enable macros for USARTx
 #define USART1_CLOCK_ENABLE()	(RCC->APB2ENR |= (1UL << 4U ) )
 #define USART2_CLOCK_ENABLE()	(RCC->APB1ENR |= (1UL << 17U) )
 #define USART3_CLOCK_ENABLE()	(RCC->APB1ENR |= (1UL << 18U) )
 #define USART6_CLOCK_ENABLE()	(RCC->APB2ENR |= (1UL << 5U ) )
 
-// Clock disable macros for USARTx
-#define USART1_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1UL << 4U ) )
-#define USART2_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1UL << 17U) )
-#define USART3_CLOCK_DISABLE()	(RCC->APB1ENR &= ~(1UL << 18U) )
-#define USART6_CLOCK_DISABLE()	(RCC->APB2ENR &= ~(1UL << 5U ) )
-
-// Driver APIs
-void XDR_USART_Init(xdr_usart *xdr_usart);
-void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
-uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
-
-#endif /* STM32F407XX__XDR_USART_H_ */
+#endif /* STM32F767XX__XDR_USART_H_ */
