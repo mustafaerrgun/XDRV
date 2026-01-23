@@ -11,13 +11,8 @@ PATH_CMSIS_DEVICE_INC = Drivers/CMSIS/Device/ST/STM32F7xx/Include
 BUILD_DIR = build
 
 # Object files
-DRIVER_OBJS = $(BUILD_DIR)/stm32f767xx_xdr_gpio.o \
-              $(BUILD_DIR)/stm32f767xx_xdr_rcc.o \
-              $(BUILD_DIR)/stm32f767xx_xdr_i2c.o \
-              $(BUILD_DIR)/stm32f767xx_xdr_spi.o \
-              $(BUILD_DIR)/stm32f767xx_xdr_usart.o \
-			  $(BUILD_DIR)/stm32f767xx_xdr_systick.o \
-			  $(BUILD_DIR)/stm32f767xx_xdr_tim.o
+DRIVER_SRCS = $(wildcard $(PATH_DRV_SRC)/*.c)
+DRIVER_OBJS = $(DRIVER_SRCS:$(PATH_DRV_SRC)/%.c=$(BUILD_DIR)/%.o)
 
 # Default target - builds all object files
 all: $(DRIVER_OBJS)
@@ -27,26 +22,17 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 # Driver object files
-$(BUILD_DIR)/stm32f767xx_xdr_gpio.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_gpio.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(PATH_DRV_SRC)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
 	
-$(BUILD_DIR)/stm32f767xx_xdr_rcc.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_rcc.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
+# Formatting
+format:
+	@echo "Formatting source files..."
+	clang-format -i $(PATH_DRV_SRC)/*.c
 
-$(BUILD_DIR)/stm32f767xx_xdr_i2c.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_i2c.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
-
-$(BUILD_DIR)/stm32f767xx_xdr_spi.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_spi.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
-
-$(BUILD_DIR)/stm32f767xx_xdr_usart.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_usart.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
-
-$(BUILD_DIR)/stm32f767xx_xdr_systick.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_systick.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
-
-$(BUILD_DIR)/stm32f767xx_xdr_tim.o: $(PATH_DRV_SRC)/stm32f767xx_xdr_tim.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -I$(PATH_DRV_INC) $< -o $@
+format-check:
+	@echo "Checking formatting of source files..."
+	clang-format --Werror -i $(PATH_DRV_SRC)/*.c
 
 # Clean target to remove build directory
 clean:
