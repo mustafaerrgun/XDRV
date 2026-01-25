@@ -13,6 +13,7 @@
 static void XDR_USART_Clock_Enable(xdr_usart *xdr_usart);
 static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart);
 static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart);
+static xdr_usart *usart_irq;
 
 void XDR_USART_Init(xdr_usart *xdr_usart)
 {
@@ -202,4 +203,29 @@ uint8_t XDR_USART_Receive(xdr_usart *xdr_usart)
     data = (uint8_t)(xdr_usart->usart->RDR & 0xFFUL);
 
     return data;
+}
+
+void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart)
+{
+    /* Use global xdr_usart */
+    usart_irq = xdr_usart;
+    // Enable RXNE interrupt
+    xdr_usart->usart->CR1 |= USART_CR1_RXNEIE;
+    /*Enable USART3_IRQn in NVIC*/
+    NVIC_EnableIRQ(USART3_IRQn);
+}
+
+void USART3_IRQHandler(void)
+{
+
+    // Check RXNE flag AND RXNE interrupt enable
+    if (((usart_irq->usart->ISR & USART_ISR_RXNE) != 0U) &&
+        ((usart_irq->usart->CR1 & USART_CR1_RXNEIE) != 0U))
+    {
+        // Reading RDR clears RXNE
+        uint8_t ch = (uint8_t)usart_irq->usart->RDR;
+
+        // Pass data to user hook (best: give parameter)
+        XDR_USART3_RxCallback(ch);
+    }
 }
