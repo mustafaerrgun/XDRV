@@ -31,6 +31,10 @@ typedef struct{
 void XDR_USART_Init(xdr_usart *xdr_usart);
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
+// Driver Interrupt APIs
+void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart);
+void USART3_IRQHandler(void);
+void XDR_USART3_RxCallback(uint8_t data);
 
 
 // Macros for USART CR1

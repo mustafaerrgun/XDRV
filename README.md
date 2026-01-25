@@ -126,6 +126,7 @@ uint32_t XDR_Get_PCLK2(void);
 - Support for multiple baud rates
 - Used HSI as the clock source for USARTx
 - Hardcoded GPIO pin configurations for USART instances
+- USART3 peripheral supports RX interrupt functionality
 - USART1/2/3/6
 
 ```
@@ -144,6 +145,7 @@ The `xdr_usart` structure is used to configure the USART module, allowing users 
 void XDR_USART_Init(xdr_usart *xdr_usart);
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
+void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart);
 ```
 
 ## 5. XDR-I2C Driver
