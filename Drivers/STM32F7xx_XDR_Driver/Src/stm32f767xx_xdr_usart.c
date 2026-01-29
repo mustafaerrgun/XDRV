@@ -13,7 +13,11 @@
 static void XDR_USART_Clock_Enable(xdr_usart *xdr_usart);
 static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart);
 static uint32_t XDR_USART_BRR_Calculation(const xdr_usart *xdr_usart);
+static void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart);
+static void XDR_USART3_EnableDMA(xdr_usart *xdr_usart);
+// Variables
 static xdr_usart *usart_irq;
+char USART3_Data_Buffer[USART_BUFF_SIZE];
 
 void XDR_USART_Init(xdr_usart *xdr_usart)
 {
@@ -38,6 +42,17 @@ void XDR_USART_Init(xdr_usart *xdr_usart)
 
     // Enable USART Module
     xdr_usart->usart->CR1 |= (1UL << XDR_USART_CR1_UE);
+
+    // Enable interrupt for USART3
+    if (xdr_usart->xdr_usart_interrupt != 0U)
+    {
+        XDR_USART3_EnableRxInterrupt(xdr_usart);
+    }
+
+    if (xdr_usart->xdr_usart_dma != 0U)
+    {
+        XDR_USART3_EnableDMA(xdr_usart);
+    }
 }
 
 static void XDR_USART_GPIO_Init(const xdr_usart *xdr_usart)
@@ -203,6 +218,104 @@ uint8_t XDR_USART_Receive(xdr_usart *xdr_usart)
     data = (uint8_t)(xdr_usart->usart->RDR & 0xFFUL);
 
     return data;
+}
+
+static void XDR_USART3_EnableDMA(xdr_usart *xdr_usart)
+{
+    // Enable DMA for USART3 CR3
+    xdr_usart->usart->CR3 = USART_CR3_DMAR | USART_CR3_DMAT;
+    /*Enable clock access to DMA1*/
+    RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
+    /*Enable DMA Stream3 Interrupt in NVIC*/
+    NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+}
+
+void XDR_USART3_DMA_Rx_Config(void)
+{
+    /*Disable DMA stream*/
+    DMA1_Stream1->CR &= ~DMA_SxCR_EN;
+    /*Wait till DMA Stream is disabled*/
+    while ((DMA1_Stream1->CR & DMA_SxCR_EN) != 0U)
+    {
+    }
+    /*Clear interrupt flags for stream 1*/
+    DMA1->LIFCR = DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CTEIF1 | DMA_LIFCR_CHTIF1;
+    /*Set periph address*/
+    DMA1_Stream1->PAR = (uint32_t)(&(USART3->RDR));
+    /*Set mem address*/
+    DMA1_Stream1->M0AR = (uint32_t)(&USART3_Data_Buffer);
+    /*Set number of transfer*/
+    DMA1_Stream1->NDTR = (uint16_t)USART_BUFF_SIZE;
+    /*Select Channel 4*/
+    DMA1_Stream1->CR &= ~DMA_SxCR_CHSEL_0;
+    DMA1_Stream1->CR &= ~DMA_SxCR_CHSEL_1;
+    DMA1_Stream1->CR |= DMA_SxCR_CHSEL_2;
+    /*Enable memory addr increment*/
+    DMA1_Stream1->CR |= DMA_SxCR_MINC;
+    /*Enable transfer complete interrupt*/
+    DMA1_Stream1->CR |= DMA_SxCR_TCIE;
+    /*Enable Circular mode*/
+    DMA1_Stream1->CR |= DMA_SxCR_CIRC;
+    /*Set transfer direction : Periph to Mem*/
+    DMA1_Stream1->CR &= ~DMA_SxCR_DIR_0;
+    DMA1_Stream1->CR &= ~DMA_SxCR_DIR_1;
+    /*Enable DMA stream*/
+    DMA1_Stream1->CR |= DMA_SxCR_EN;
+    /*Enable DMA Stream1 Interrupt in NVIC*/
+    NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+}
+
+void XDR_USART3_DMA_Tx_Config(uint32_t data, uint32_t length)
+{
+    /*Disable DMA stream*/
+    DMA1_Stream3->CR &= ~DMA_SxCR_EN;
+    /*Wait till  DMA Stream is disabled*/
+    while ((DMA1_Stream3->CR & DMA_SxCR_EN) != 0U)
+    {
+    }
+    /*Clear interrupt flags for stream 3*/
+    DMA1->LIFCR = DMA_LIFCR_CDMEIF3 | DMA_LIFCR_CTEIF3 | DMA_LIFCR_CHTIF3;
+    /*Set periph address*/
+    DMA1_Stream3->PAR = (uint32_t)(&(USART3->TDR));
+    /*Set mem address*/
+    DMA1_Stream3->M0AR = data;
+    /*Set number of transfer*/
+    DMA1_Stream3->NDTR = length;
+    /*Select Channel 4*/
+    DMA1_Stream3->CR &= ~DMA_SxCR_CHSEL_0;
+    DMA1_Stream3->CR &= ~DMA_SxCR_CHSEL_1;
+    DMA1_Stream3->CR |= DMA_SxCR_CHSEL_2;
+    /*Enable memory addr increment*/
+    DMA1_Stream3->CR |= DMA_SxCR_MINC;
+    /*Set transfer direction :Mem to Periph*/
+    DMA1_Stream3->CR |= DMA_SxCR_DIR_0;
+    DMA1_Stream3->CR &= ~DMA_SxCR_DIR_1;
+    /*Set transfer complete interrupt*/
+    DMA1_Stream3->CR |= DMA_SxCR_TCIE;
+    /*Enable DMA stream*/
+    DMA1_Stream3->CR |= DMA_SxCR_EN;
+}
+
+void DMA1_Stream1_IRQHandler(void)
+{
+    if ((DMA1->LISR & DMA_LISR_TCIF1) != 0U)
+    {
+        /* Do Something */
+        XDR_USART3_DMA_Rx_Callback();
+        /*Clear the flag*/
+        DMA1->LIFCR |= DMA_LIFCR_CTCIF1;
+    }
+}
+
+void DMA1_Stream3_IRQHandler(void)
+{
+    if ((DMA1->LISR & DMA_LISR_TCIF3) != 0U)
+    {
+        /* Do Something */
+        XDR_USART3_DMA_Tx_Callback();
+        /*Clear the flag*/
+        DMA1->LIFCR |= DMA_LIFCR_CTCIF3;
+    }
 }
 
 void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart)
