@@ -25,6 +25,8 @@ typedef struct{
 	USART_TypeDef 		*usart;
 	xdr_usart_instance	 xdr_usart_instance;
 	uint32_t 			 xdr_usart_baudrate;
+	uint8_t				 xdr_usart_interrupt;
+	uint8_t				 xdr_usart_dma;
 }xdr_usart;
 
 // Driver APIs
@@ -32,9 +34,17 @@ void XDR_USART_Init(xdr_usart *xdr_usart);
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 // Driver Interrupt APIs
-void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart);
 void USART3_IRQHandler(void);
-void XDR_USART3_RxCallback(uint8_t data);
+void XDR_USART3_Callback(uint8_t data);
+// DMA Macros, variables and functions for USART3
+#define USART_BUFF_SIZE		10U
+extern char USART3_Data_Buffer[USART_BUFF_SIZE];
+void DMA1_Stream1_IRQHandler(void);
+void DMA1_Stream3_IRQHandler(void);
+void XDR_USART3_DMA_Rx_Config(void);
+void XDR_USART3_DMA_Tx_Config(uint32_t data, uint32_t length);
+void XDR_USART3_DMA_Rx_Callback(void);
+void XDR_USART3_DMA_Tx_Callback(void);
 
 
 // Macros for USART CR1

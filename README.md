@@ -127,6 +127,7 @@ uint32_t XDR_Get_PCLK2(void);
 - Used HSI as the clock source for USARTx
 - Hardcoded GPIO pin configurations for USART instances
 - USART3 peripheral supports RX interrupt functionality
+- USART3 peripheral supports DMA RX/TX functionality
 - USART1/2/3/6
 
 ```
@@ -134,10 +135,12 @@ typedef struct{
     USART_TypeDef       *usart;
     xdr_usart_instance   xdr_usart_instance;
     uint32_t             xdr_usart_baudrate;
+    uint8_t              xdr_usart_interrupt;
+    uint8_t              xdr_usart_dma;
 }xdr_usart;
 ```
 
-The `xdr_usart` structure is used to configure the USART module, allowing users to select the USART instance and baud rate.
+The `xdr_usart`  structure is used to configure the USART module, allowing users to select the USART instance, baud rate, and enable interrupt or DMA functionality.
 
 ### Public APIs:
 
@@ -146,6 +149,14 @@ void XDR_USART_Init(xdr_usart *xdr_usart);
 void XDR_USART_Send(xdr_usart *xdr_usart, uint8_t data);
 uint8_t XDR_USART_Receive(xdr_usart *xdr_usart);
 void XDR_USART3_EnableRxInterrupt(xdr_usart *xdr_usart);
+```
+
+DMA Support for USART3:
+```
+void XDR_USART3_DMA_Rx_Config(void);
+void XDR_USART3_DMA_Tx_Config(uint32_t data, uint32_t length);
+void XDR_USART3_DMA_Rx_Callback(void);
+void XDR_USART3_DMA_Tx_Callback(void);
 ```
 
 ## 5. XDR-I2C Driver
