@@ -24,12 +24,12 @@ cppcheck \
   --inline-suppr \
   "--suppress=*:$CMSIS_INCLUDE_ABS/*" \
   "--suppress=*:$CMSIS_DEVICE_ABS/*" \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_gpio.c  --suppress=misra-c2012-2.5:*stm32f767xx_xdr_gpio.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_rcc.c   --suppress=misra-c2012-2.3:*stm32f767xx_xdr_rcc.h   --suppress=misra-c2012-2.4:*stm32f767xx_xdr_rcc.h   --suppress=misra-c2012-2.5:*stm32f767xx_xdr_rcc.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_usart.c --suppress=misra-c2012-2.3:*stm32f767xx_xdr_usart.h --suppress=misra-c2012-2.4:*stm32f767xx_xdr_usart.h --suppress=misra-c2012-2.5:*stm32f767xx_xdr_usart.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_i2c.c   --suppress=misra-c2012-2.3:*stm32f767xx_xdr_i2c.h   --suppress=misra-c2012-2.4:*stm32f767xx_xdr_i2c.h   --suppress=misra-c2012-2.5:*stm32f767xx_xdr_i2c.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_spi.c   --suppress=misra-c2012-2.3:*stm32f767xx_xdr_spi.h   --suppress=misra-c2012-2.4:*stm32f767xx_xdr_spi.h   --suppress=misra-c2012-2.5:*stm32f767xx_xdr_spi.h \
-  --suppress=misra-c2012-11.4:*stm32f767xx_xdr_tim.c \
+  --suppress=misra-c2012-11.4:*xdr_gpio.c  --suppress=misra-c2012-2.5:*xdr_gpio.h \
+  --suppress=misra-c2012-11.4:*xdr_rcc.c   --suppress=misra-c2012-2.3:*xdr_rcc.h   --suppress=misra-c2012-2.4:*xdr_rcc.h   --suppress=misra-c2012-2.5:*xdr_rcc.h \
+  --suppress=misra-c2012-11.4:*xdr_uart.c  --suppress=misra-c2012-2.3:*xdr_uart.h  --suppress=misra-c2012-2.4:*xdr_uart.h  --suppress=misra-c2012-2.5:*xdr_uart.h \
+  --suppress=misra-c2012-11.4:*xdr_i2c.c   --suppress=misra-c2012-2.3:*xdr_i2c.h   --suppress=misra-c2012-2.4:*xdr_i2c.h   --suppress=misra-c2012-2.5:*xdr_i2c.h \
+  --suppress=misra-c2012-11.4:*xdr_spi.c   --suppress=misra-c2012-2.3:*xdr_spi.h   --suppress=misra-c2012-2.4:*xdr_spi.h   --suppress=misra-c2012-2.5:*xdr_spi.h \
+  --suppress=misra-c2012-11.4:*xdr_tim.c \
   --error-exitcode=1 \
   $INCLUDE_PATHS \
   $SRC_FILES 2> "$SCRIPT_DIR/misra_report.txt"
