@@ -17,6 +17,7 @@ static void XDR_UART3_EnableRxInterrupt(xdr_uart *xdr_uart);
 static void XDR_UART3_EnableDMA(xdr_uart *xdr_uart);
 // Variables
 static xdr_uart *uart_irq;
+/* cppcheck-suppress misra-c2012-8.7 ; External linkage is required: buffer is declared extern in xdr_uart.h for DMA access by application code */
 char UART3_Data_Buffer[UART_BUFF_SIZE];
 
 void XDR_UART_Init(xdr_uart *xdr_uart)

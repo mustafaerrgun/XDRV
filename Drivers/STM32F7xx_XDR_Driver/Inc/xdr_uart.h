@@ -34,7 +34,7 @@ void XDR_UART_Init(xdr_uart *xdr_uart);
 void XDR_UART_Send(xdr_uart *xdr_uart, uint8_t data);
 uint8_t XDR_UART_Receive(xdr_uart *xdr_uart);
 // Driver Interrupt APIs
-void UART3_IRQHandler(void);
+void USART3_IRQHandler(void);
 void XDR_UART3_Callback(uint8_t data);
 // DMA Macros, variables and functions for UART3
 #define UART_BUFF_SIZE		10U

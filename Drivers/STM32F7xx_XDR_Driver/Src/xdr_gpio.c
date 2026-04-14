@@ -169,4 +169,3 @@ void EXTI15_10_IRQHandler(void)
     }
 }
 
-__attribute__((weak)) void XDR_EXTI13_Callback(void) { }
