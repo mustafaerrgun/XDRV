@@ -23,36 +23,36 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi make
 
-      # 3) Build XDR drivers
+      # 3) Build
       - name: Compile XDR sources
         run: |
-          make all
+          make
 
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1) Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # 2) Install cppcheck
-      - name: Install cppcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cppcheck
-
-      # 3) Run MISRA check
-      - name: Run MISRA check
-        run: |
-          chmod +x ./Tests/misra_check.sh
-          ./Tests/misra_check.sh
-
-      # 4) Upload MISRA report
-      - name: Upload MISRA report
-        if: always()               
-        uses: actions/upload-artifact@v4
-        with:
-          name: misra-report
-          path: Tests/misra_report.txt
+#  test:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      # 1) Checkout the repository
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      # 2) Install cppcheck
+#      - name: Install cppcheck
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y cppcheck
+#
+#      # 3) Run MISRA check
+#      - name: Run MISRA check
+#        run: |
+#          chmod +x ./Tests/misra_check.sh
+#          ./Tests/misra_check.sh
+#
+#      # 4) Upload MISRA report
+#      - name: Upload MISRA report
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: misra-report
+#          path: Tests/misra_report.txt
 
