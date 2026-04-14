@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file    stm32f767xx_xdr_tim.c
+ * @file    xdr_tim.c
  * @author  Mustafa Ergün
  * @brief   TIM XDR module driver.
  *          This file provides firmware functions to manage the TIM2/3/4/5 peripherals
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_tim.h"
+#include "xdr_tim.h"
 
 static void XDR_TIM_Clock_Enable(xdr_tim *xdr_tim);
 

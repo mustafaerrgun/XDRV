@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    stm32f7xx_xdr_rcc.c
+ * @file    xdr_rcc.c
  * @author  Mustafa Ergün
  * @brief   RCC XDR module driver.
  *          This file provides firmware functions to configure the the system
@@ -8,7 +8,7 @@
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_rcc.h"
+#include "xdr_rcc.h"
 
 // Private APIs
 static void XDR_RCC_ConfigBusClocks(xdr_rcc *xdr_rcc);

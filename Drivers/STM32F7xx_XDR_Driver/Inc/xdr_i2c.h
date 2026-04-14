@@ -1,16 +1,16 @@
 /**
   ******************************************************************************
-  * @file    stm32f7xx_xdr_i2c.h
+  * @file    xdr_i2c.h
   * @author  Mustafa Ergün
   * @brief   Header file of I2C XDR module.
   ******************************************************************************
   */
-#ifndef STM32F407XX__XDR_I2C_H_
-#define STM32F407XX__XDR_I2C_H_
+#ifndef XDR_I2C_H_
+#define XDR_I2C_H_
 
 #include <stddef.h>
 #include "stm32f767xx.h"
-#include "stm32f767xx_xdr_gpio.h"
+#include "xdr_gpio.h"
 
 typedef enum
 {
@@ -82,4 +82,4 @@ uint8_t XDR_I2C_Read(xdr_i2c *xdr_I2C, uint8_t addr7);
 #define I2C4_CLOCK_ENABLE()		(RCC->APB1ENR |= (1UL << 24U) )
 
 
-#endif /* STM32F407XX__XDR_I2C_H_ */
+#endif /* XDR_I2C_H_ */

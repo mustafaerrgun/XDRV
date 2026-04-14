@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file           : test_gpio_driver.c
+ * @file           : test_timer.c
  * @brief          : Test file for XDR TIM Driver
  ******************************************************************************
  */
 
 #include <stdint.h>
-#include "stm32f767xx_xdr_gpio.h"
-#include "stm32f767xx_xdr_tim.h"
+#include "xdr_gpio.h"
+#include "xdr_tim.h"
 
 xdr_gpio led;
 xdr_tim  tim;

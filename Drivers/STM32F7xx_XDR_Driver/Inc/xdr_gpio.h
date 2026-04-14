@@ -1,13 +1,13 @@
 /**
   ******************************************************************************
-  * @file    stm32f7xx_xdr_gpio.h
+  * @file    xdr_gpio.h
   * @author  Mustafa Ergün
   * @brief   Header file of GPIO XDR module.
   ******************************************************************************
   */
 
-#ifndef STM32F767XX__XDR_GPIO_DRIVER_H_
-#define STM32F767XX__XDR_GPIO_DRIVER_H_
+#ifndef XDR_GPIO_H_
+#define XDR_GPIO_H_
 
 #include "stm32f767xx.h"
 
@@ -101,4 +101,4 @@ void EXTI15_10_IRQHandler(void);
 #define GPIOK_CLOCK_ENABLE()	(RCC->AHB1ENR  |= (1UL << 10U))
 
 
-#endif /* STM32F767XX__XDR_GPIO_DRIVER_H_ */
+#endif /* XDR_GPIO_H_ */

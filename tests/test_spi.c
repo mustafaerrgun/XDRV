@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
- * @file           : test_spi_driver.c
+ * @file           : test_spi.c
  * @brief          : Test file for XDR SPI Driver
  ******************************************************************************
  */
 
 #include <stdint.h>
-#include "stm32f767xx_xdr_spi.h"
+#include "xdr_spi.h"
 
 
 void run_test(void)

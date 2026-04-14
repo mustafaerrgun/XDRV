@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
- * @file    stm32f7xx_xdr_systick.c
+ * @file    xdr_systick.c
  * @author  Mustafa Ergün
  * @brief   SysTick XDR module driver.
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_systick.h"
+#include "xdr_systick.h"
 
 void XDR_SysTick_Delay(uint32_t delay_ms)
 {

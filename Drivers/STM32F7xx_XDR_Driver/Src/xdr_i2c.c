@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file    stm32f7xx_xdr_i2c.c
+ * @file    xdr_i2c.c
  * @author  Mustafa Ergün
  * @brief   I2C XDR module driver.
  *          This file provides firmware functions to manage the I2C peripheral
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_i2c.h"
+#include "xdr_i2c.h"
 
 // Private APIs
 static void XDR_I2C_Clock_Enable(xdr_i2c *xdr_I2C);

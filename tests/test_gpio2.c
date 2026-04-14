@@ -1,12 +1,11 @@
 /**
  ******************************************************************************
- * @file           : test_gpio_driver.c
+ * @file           : test_gpio2.c
  * @brief          : Test file for XDR Button EXTI feature of GPIO Driver
  ******************************************************************************
  */
 
-#include <stdint.h>
-#include "stm32f767xx_xdr_gpio.h"
+#include "xdr_gpio.h"
 
 
 xdr_gpio led;

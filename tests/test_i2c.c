@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
- * @file           : test_i2c_driver.c
+ * @file           : test_i2c.c
  * @brief          : Test file for XDR I2C Driver
  ******************************************************************************
  */
 
 #include <stdint.h>
-#include "stm32f767xx_xdr_i2c.h"
+#include "xdr_i2c.h"
 
 #define ARDUINO_ADDR_7BIT  (0x08u)
 

@@ -1,13 +1,13 @@
 /**
   ******************************************************************************
-  * @file    stm32f7xx_xdr_rcc.h
+  * @file    xdr_rcc.h
   * @author  Mustafa Ergün
   * @brief   Header file of RCC XDR module.
   ******************************************************************************
   */
 
-#ifndef STM32F407XX__XDR_RCC_DRIVER_H_
-#define STM32F407XX__XDR_RCC_DRIVER_H_
+#ifndef XDR_RCC_H_
+#define XDR_RCC_H_
 
 #include "stm32f767xx.h"
 
@@ -125,4 +125,4 @@ uint32_t XDR_Get_PCLK2(void);
 
 #define XDR_FLASH_WAIT_CLEAR()   (FLASH->ACR &= ~(XDR_FLASH_WAIT_MASK << XDR_FLASH_WAIT))
 
-#endif /* STM32F407XX__XDR_RCC_DRIVER_H_ */
+#endif /* XDR_RCC_DRIVER_H_ */

@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file    stm32f7xx_xdr_spi.c
+ * @file    xdr_spi.c
  * @author  Mustafa Ergün
  * @brief   I2C XDR module driver.
  *          This file provides firmware functions to manage the SPI peripheral
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_spi.h"
+#include "xdr_spi.h"
 
 // Private APIs
 static void XDR_SPI_GPIO_Init(void);

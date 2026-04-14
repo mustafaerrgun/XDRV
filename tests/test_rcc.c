@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file           : test_rcc_driver.c
+ * @file           : test_rcc.c
  * @brief          : Test XDR RCC Driver module
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_rcc.h"
+#include "xdr_rcc.h"
 
 void run_test(void)
 {

@@ -1,13 +1,12 @@
 /**
  ******************************************************************************
- * @file           : test_gpio_driver.c
+ * @file           : test_gpio1.c
  * @brief          : Test file for XDR GPIO Driver
  ******************************************************************************
  */
 
-#include <stdint.h>
-#include "stm32f767xx_xdr_gpio.h"
-#include "stm32f767xx_xdr_systick.h"
+#include "xdr_gpio.h"
+#include "xdr_systick.h"
 
 xdr_gpio led;
 

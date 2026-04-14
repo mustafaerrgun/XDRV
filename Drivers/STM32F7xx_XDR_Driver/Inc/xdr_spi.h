@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
-  * @file    stm32f767xx_xdr_spi.h
+  * @file    xdr_spi.h
   * @author  Mustafa Ergün
   * @brief   Header file of SPI XDR module.
   ******************************************************************************
   */
-#ifndef STM32F767XX__XDR_SPI_H_
-#define STM32F767XX__XDR_SPI_H_
+#ifndef XDR_SPI_H_
+#define XDR_SPI_H_
 
 #include "stm32f767xx.h"
-#include "stm32f767xx_xdr_gpio.h"
+#include "xdr_gpio.h"
 
 
 typedef struct{
@@ -52,12 +52,12 @@ uint8_t XDR_SPI_Receive(void);
 
 // Clock enable macros for SPIx
 #define SPI1_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1UL << 12U))
-#define SPI2_CLOCK_ENABLE()		(RCC->APB1ENR |= (1UL << 14U))
-#define SPI3_CLOCK_ENABLE()		(RCC->APB1ENR |= (1UL << 15U))
+#define SPI2_CLOCK_ENABLE()		  (RCC->APB1ENR |= (1UL << 14U))
+#define SPI3_CLOCK_ENABLE()		  (RCC->APB1ENR |= (1UL << 15U))
 #define SPI4_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1UL << 13U))
 #define SPI5_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1UL << 20U))
 #define SPI6_CLOCK_ENABLE()	    (RCC->APB2ENR |= (1UL << 21U))
 
 
 
-#endif /* STM32F767XX__XDR_SPI_H_ */
+#endif /* XDR_SPI_H_ */

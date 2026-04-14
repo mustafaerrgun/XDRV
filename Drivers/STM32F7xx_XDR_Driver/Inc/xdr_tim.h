@@ -1,13 +1,13 @@
 /**
   ******************************************************************************
-  * @file    stm32f7xx_xdr_rcc.h
+  * @file    xdr_tim.h
   * @author  Mustafa Ergün
   * @brief   Header file of TIM XDR module.
   ******************************************************************************
   */
 
-#ifndef STM32F767XX__XDR_TIM_DRIVER_H_
-#define STM32F767XX__XDR_TIM_DRIVER_H_
+#ifndef XDR_TIM_H_
+#define XDR_TIM_H_
 
 #include "stm32f767xx.h"
 
@@ -41,4 +41,4 @@ void XDR_TIM_WaitUpdate(xdr_tim *xdr_tim);
 #define TIM4_CLOCK_ENABLE()	    (RCC->APB1ENR |= (1UL << 3U))
 #define TIM5_CLOCK_ENABLE()	    (RCC->APB1ENR |= (1UL << 3U))
 
-#endif /* STM32F767XX__XDR_TIM_DRIVER_H_ */
+#endif /* XDR_TIM_H_ */

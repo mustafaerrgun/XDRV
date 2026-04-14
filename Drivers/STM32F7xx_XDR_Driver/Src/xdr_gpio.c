@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    stm32f7xx_xdr_gpio.c
+ * @file    xdr_gpio.c
  * @author  Mustafa Ergün
  * @brief   GPIO XDR module driver.
  *          This file provides firmware functions to manage the following
@@ -10,7 +10,7 @@
  ******************************************************************************
  */
 
-#include "stm32f767xx_xdr_gpio.h"
+#include "xdr_gpio.h"
 
 // Private APIs
 static void XDR_GPIO_Clock_Enable(const xdr_gpio *xdr_gpio);
@@ -168,3 +168,5 @@ void EXTI15_10_IRQHandler(void)
         XDR_EXTI13_Callback();
     }
 }
+
+__attribute__((weak)) void XDR_EXTI13_Callback(void) { }
