@@ -7,17 +7,17 @@
  * recompile. Only one test file should be compiled at a time.
  *
  * Available tests:
- *   Tests/test_button_exti.c
- *   Tests/test_gpio_driver.c
- *   Tests/test_i2c_driver.c
- *   Tests/test_rcc_driver.c
- *   Tests/test_spi_driver.c
- *   Tests/test_timer_driver.c
- *   Tests/test_usart_dma.c
- *   Tests/test_usart_driver.c
- *   Tests/test_usart_driver_receive.c
- *   Tests/test_usart_driver_rx_interrupt.c
- *   Tests/test_usart_driver_send.c
+ *   Tests/test_gpio1.c
+ *   Tests/test_gpio2.c
+ *   Tests/test_uart1.c
+ *   Tests/test_uart2.c
+ *   Tests/test_uart3.c
+ *   Tests/test_uart4.c
+ *   Tests/test_uart5.c
+ *   Tests/test_rcc.c
+ *   Tests/test_i2c.c
+ *   Tests/test_spi.c
+ *   Tests/test_timer.c
  ******************************************************************************
  */
 
