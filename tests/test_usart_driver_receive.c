@@ -8,7 +8,7 @@
 #include "stm32f767xx_xdr_usart.h"
 #include "stm32f767xx_xdr_systick.h"
 
-int main(void)
+void run_test(void)
 {
 	xdr_usart usart;
 	usart.xdr_usart_instance = XDR_USART3;
@@ -34,6 +34,4 @@ int main(void)
 			received = 0;
 		}
 	}
-
-	return 0 ;
 }

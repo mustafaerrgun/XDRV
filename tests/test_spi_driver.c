@@ -9,7 +9,7 @@
 #include "stm32f767xx_xdr_spi.h"
 
 
-int main(void)
+void run_test(void)
 {
 
     XDR_SPI_Init();

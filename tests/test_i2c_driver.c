@@ -10,7 +10,7 @@
 
 #define ARDUINO_ADDR_7BIT  (0x08u)
 
-int main(void)
+void run_test(void)
 {
     xdr_i2c test_i2c;
     test_i2c.xdr_i2c_instance = XDR_I2C1;

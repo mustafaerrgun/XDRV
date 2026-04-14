@@ -11,7 +11,7 @@
 
 xdr_gpio led;
 
-int main(void)
+void run_test(void)
 {
 	led.xdr_gpiox 		 = GPIOB;
 	led.xdr_gpio_portId  = XDR_GPIO_PORT_B;
@@ -29,7 +29,6 @@ int main(void)
 	while(1){
 
 	}
-	return 0 ;
 }
 
 void XDR_EXTI13_Callback(void){

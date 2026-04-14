@@ -12,7 +12,7 @@
 xdr_gpio led;
 xdr_tim  tim;
 
-int main(void)
+void run_test(void)
 {
 	tim.tim_id = XDR_TIM_2;
 	tim.presc = 16000U;
@@ -38,6 +38,5 @@ int main(void)
 		XDR_TIM_WaitUpdate(&tim);
 
 	}
-	return 0 ;
 }
 

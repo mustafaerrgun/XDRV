@@ -10,7 +10,7 @@
 
 xdr_usart usart;
 
-int main(void)
+void run_test(void)
 {
 	usart.xdr_usart_instance = XDR_USART3;
 	usart.xdr_usart_baudrate = XDR_USART_BAUD_9600;
@@ -22,8 +22,6 @@ int main(void)
 	while(1){
 
 	}
-
-	return 0 ;
 }
 
 void XDR_USART3_RxCallback(uint8_t data){

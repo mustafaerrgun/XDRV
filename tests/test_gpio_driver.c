@@ -11,7 +11,7 @@
 
 xdr_gpio led;
 
-int main(void)
+void run_test(void)
 {
 	led.xdr_gpiox 		 = GPIOB;
 	led.xdr_gpio_portId  = XDR_GPIO_PORT_B;
@@ -30,6 +30,5 @@ int main(void)
 		/*Delay for 2000ms*/
 		XDR_SysTick_Delay(2000);
 	}
-	return 0 ;
 }
 

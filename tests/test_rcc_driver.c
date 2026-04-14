@@ -7,7 +7,7 @@
 
 #include "stm32f767xx_xdr_rcc.h"
 
-int main(void)
+void run_test(void)
 {
 	xdr_rcc rcc;
 	rcc.rcc = RCC;
@@ -26,7 +26,6 @@ int main(void)
 	while(1){
 
 	}
-	return 0 ;
 }
 
 

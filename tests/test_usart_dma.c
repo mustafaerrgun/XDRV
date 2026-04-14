@@ -15,7 +15,7 @@ volatile uint8_t g_rx_cmplt;
 volatile uint8_t g_tx_cmplt;
 char msg_buff[150] ={'\0'};
 
-int main(void)
+void run_test(void)
 {
 	usart.xdr_usart_instance = XDR_USART3;
 	usart.xdr_usart_baudrate = XDR_USART_BAUD_9600;
@@ -41,8 +41,6 @@ int main(void)
         }
 
 	}
-
-	return 0 ;
 }
 
 void XDR_USART3_DMA_Rx_Callback(void){
