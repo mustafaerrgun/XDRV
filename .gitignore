@@ -1,2 +1,3 @@
 tests/misra_report.txt
 /build/
+*.ctu-info
