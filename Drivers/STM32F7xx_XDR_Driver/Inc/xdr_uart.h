@@ -10,7 +10,6 @@
 #define XDR_UART_H_
 
 #include "stm32f767xx.h"
-#include "xdr_rcc.h"
 #include "xdr_gpio.h"
 
 typedef enum
@@ -18,11 +17,13 @@ typedef enum
 	XDR_UART1,
 	XDR_UART2,
 	XDR_UART3,
-	XDR_UART6
+	XDR_UART4,
+	XDR_UART5,
+	XDR_UART6,
+	XDR_UART7
 }xdr_uart_instance;
 
 typedef struct{
-	USART_TypeDef 		*uart;
 	xdr_uart_instance	 xdr_uart_instance;
 	uint32_t 			 xdr_uart_baudrate;
 	uint8_t				 xdr_uart_interrupt;
@@ -30,9 +31,10 @@ typedef struct{
 }xdr_uart;
 
 // Driver APIs
-void XDR_UART_Init(xdr_uart *xdr_uart);
-void XDR_UART_Send(xdr_uart *xdr_uart, uint8_t data);
-uint8_t XDR_UART_Receive(xdr_uart *xdr_uart);
+void UART_Init(const xdr_uart *xdr_uart);
+void UART_SendChar(const xdr_uart *xdr_uart, char c);
+void UART_SendString(const xdr_uart *xdr_uart, const char *str);
+uint8_t UART_Receive(const xdr_uart *xdr_uart);
 // Driver Interrupt APIs
 void USART3_IRQHandler(void);
 void XDR_UART3_Callback(uint8_t data);
@@ -53,31 +55,19 @@ __attribute__((weak)) void XDR_UART3_RxCallback(uint8_t data) { (void)data; }
 
 
 // Macros for UART CR1
-#define XDR_UART_CR1_UE		0U
-#define XDR_UART_CR1_UESM		1U
-#define XDR_UART_CR1_RE		2U
-#define XDR_UART_CR1_TE		3U
-#define XDR_UART_CR1_IDLEIE	4U
-#define XDR_UART_CR1_RXNEIE	5U
-#define XDR_UART_CR1_TCIE		6U
-#define XDR_UART_CR1_TXEIE		7U
-#define XDR_UART_CR1_PEIE		8U
-#define XDR_UART_CR1_M0		12U
-#define XDR_UART_CR1_OVER8		15U
-#define XDR_UART_CR1_M1		28U
-
+#define XDR_UART_CR1_UE			0U
+#define XDR_UART_CR1_RE			2U
+#define XDR_UART_CR1_TE			3U
 #define XDR_UART_CR1_CLEAR		0UL
 
 // Macros for UART ISR
 #define XDR_UART_ISR_RXNE		5U
-#define XDR_UART_ISR_TC		6U
+#define XDR_UART_ISR_TC			6U
 #define XDR_UART_ISR_TXE		7U
 
 // Macros for UART BRR
 #define XDR_UART_BRR_Pos			4U
-#define XDR_UART_BRR_Over16Mask	0x0FU
-
-#define XDR_UART_OVERSAMPLING_16   0UL
+#define XDR_UART_BRR_Over16Mask		0x0FU
 
 // Macros for Baud Rates
 #define XDR_UART_BAUD_4800      4800UL
@@ -90,26 +80,56 @@ __attribute__((weak)) void XDR_UART3_RxCallback(uint8_t data) { (void)data; }
 // Macro for Clock Source Freqeuncy
 #define XDR_HSI_CLK				16000000U
 
-// Macros GPIO AF bit positions for selected pins
-#define XDR_UART_GPIO_AF_PA9	4U
-#define XDR_UART_GPIO_AF_PA10	8U
-#define XDR_UART_GPIO_AF_PD5	20U
-#define XDR_UART_GPIO_AF_PD6	24U
-#define XDR_UART_GPIO_AF_PD8	0U
-#define XDR_UART_GPIO_AF_PD9	4U
-#define XDR_UART_GPIO_AF_PC6	24U
-#define XDR_UART_GPIO_AF_PC7	28U
+// Compute AFR register index and bit shift directly from pin number
+#define UART_AFR_INDEX(pin)  ((uint8_t)((pin) >> 3U))
+#define UART_AFR_SHIFT(pin)  ((uint8_t)(((pin) & 0x7U) << 2U))
 
-// Clock source HSI selection macros for UARTx
-#define UART1_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 0U)  )
-#define UART2_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 2U)  )
-#define UART3_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 4U)  )
-#define UART6_CLOCK_SOURCE()		(RCC->DCKCFGR2 |= (2UL << 10U) )
+// GPIO pin configuration struct for UART instances
+typedef struct {
+    GPIO_TypeDef    *tx_port;
+    xdr_gpio_portId  tx_port_id;
+    uint8_t          tx_pin;
+    GPIO_TypeDef    *rx_port;
+    xdr_gpio_portId  rx_port_id;
+    uint8_t          rx_pin;
+    uint8_t          af;
+} uart_pin_cfg;
 
-// Clock enable macros for UARTx
-#define UART1_CLOCK_ENABLE()	(RCC->APB2ENR |= (1UL << 4U ) )
-#define UART2_CLOCK_ENABLE()	(RCC->APB1ENR |= (1UL << 17U) )
-#define UART3_CLOCK_ENABLE()	(RCC->APB1ENR |= (1UL << 18U) )
-#define UART6_CLOCK_ENABLE()	(RCC->APB2ENR |= (1UL << 5U ) )
+// Clock source (HSI) selection and clock enable macros for UARTx
+// DCKCFGR2: value 0b10 = HSI clock source
+#define UART1_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 0U))  | (2UL << 0U);                  \
+    RCC->APB2ENR |= (1UL << 4U);                                                    \
+} while(0)
+
+#define UART2_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 2U))  | (2UL << 2U);                  \
+    RCC->APB1ENR |= (1UL << 17U);                                                   \
+} while(0)
+
+#define UART3_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 4U))  | (2UL << 4U);                  \
+    RCC->APB1ENR |= (1UL << 18U);                                                   \
+} while(0)
+
+#define UART4_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 6U))  | (2UL << 6U);                  \
+    RCC->APB1ENR |= (1UL << 19U);                                                   \
+} while(0)
+
+#define UART5_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 8U))  | (2UL << 8U);                  \
+    RCC->APB1ENR |= (1UL << 20U);                                                   \
+} while(0)
+
+#define UART6_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 10U)) | (2UL << 10U);                 \
+    RCC->APB2ENR |= (1UL << 5U);                                                    \
+} while(0)
+
+#define UART7_CLOCK_INIT()  do {                                                    \
+    RCC->DCKCFGR2 = (RCC->DCKCFGR2 & ~(3UL << 12U)) | (2UL << 12U);                 \
+    RCC->APB1ENR |= (1UL << 30U);                                                   \
+} while(0)
 
 #endif /* XDR_UART_H_ */

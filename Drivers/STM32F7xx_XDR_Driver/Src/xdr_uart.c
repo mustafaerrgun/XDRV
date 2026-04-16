@@ -10,39 +10,41 @@
 #include "xdr_uart.h"
 
 // Private APIs
-static void XDR_UART_Clock_Enable(xdr_uart *xdr_uart);
-static void XDR_UART_GPIO_Init(const xdr_uart *xdr_uart);
-static uint32_t XDR_UART_BRR_Calculation(const xdr_uart *xdr_uart);
+static inline USART_TypeDef *UART_Get_Instance(xdr_uart_instance instance);
+static void UART_Clock_Enable(const xdr_uart *xdr_uart);
+static void UART_GPIO_Init(const xdr_uart *xdr_uart);
+static uint32_t UART_BRR_Calc(const xdr_uart *xdr_uart);
+static void UART_SendByte(const xdr_uart *xdr_uart, uint8_t data);
+
+/* UART3 Interrupt and DMA Config Functions*/
 static void XDR_UART3_EnableRxInterrupt(xdr_uart *xdr_uart);
-static void XDR_UART3_EnableDMA(xdr_uart *xdr_uart);
+static void XDR_UART3_EnableDMA(const xdr_uart *xdr_uart);
+
 // Variables
 static xdr_uart *uart_irq;
-/* cppcheck-suppress misra-c2012-8.7 ; External linkage is required: buffer is declared extern in xdr_uart.h for DMA access by application code */
 char UART3_Data_Buffer[UART_BUFF_SIZE];
 
-void XDR_UART_Init(xdr_uart *xdr_uart)
+void UART_Init(const xdr_uart *xdr_uart)
 {
+    USART_TypeDef *uart = UART_Get_Instance(xdr_uart->xdr_uart_instance);
 
     // Enable Clock for UART
-    XDR_UART_Clock_Enable(xdr_uart);
+    UART_Clock_Enable(xdr_uart);
 
     // Configure GPIO pins for UART
-    XDR_UART_GPIO_Init(xdr_uart);
+    UART_GPIO_Init(xdr_uart);
 
     // Clear CR1 register
-    xdr_uart->uart->CR1 = XDR_UART_CR1_CLEAR;
+    uart->CR1 = 0UL;
 
     // Use TX-RX Mode
-    xdr_uart->uart->CR1 |= (1UL << XDR_UART_CR1_RE) | (1UL << XDR_UART_CR1_TE);
-
-    // Use Oversampling 16
-    xdr_uart->uart->CR1 |= (XDR_UART_OVERSAMPLING_16 << XDR_UART_CR1_OVER8);
+    uart->CR1 |= USART_CR1_RE | USART_CR1_TE;
 
     // Calculate BRR register value for specified baud rate
-    xdr_uart->uart->BRR = XDR_UART_BRR_Calculation(xdr_uart);
+    uart->BRR = UART_BRR_Calc(xdr_uart);
 
     // Enable UART Module
-    xdr_uart->uart->CR1 |= (1UL << XDR_UART_CR1_UE);
+    uart->CR1 |= USART_CR1_UE;
 
     // Enable interrupt for UART3
     if (xdr_uart->xdr_uart_interrupt != 0U)
@@ -56,126 +58,74 @@ void XDR_UART_Init(xdr_uart *xdr_uart)
     }
 }
 
-static void XDR_UART_GPIO_Init(const xdr_uart *xdr_uart)
+static inline USART_TypeDef *UART_Get_Instance(xdr_uart_instance instance)
 {
+    static USART_TypeDef * const uart_instance_map[] = {
+        [XDR_UART1] = USART1,
+        [XDR_UART2] = USART2,
+        [XDR_UART3] = USART3,
+        [XDR_UART4] = UART4,
+        [XDR_UART5] = UART5,
+        [XDR_UART6] = USART6,
+        [XDR_UART7] = UART7,
+    };
+    return uart_instance_map[instance];
+}
 
-    xdr_gpio gpio_tx;
-    xdr_gpio gpio_rx;
+// GPIO Configuration for UART instances
+static void UART_GPIO_Init(const xdr_uart *xdr_uart)
+{
+    static const uart_pin_cfg uart_pin_map[(uint8_t)XDR_UART7 + 1U] = {
+        [XDR_UART1] = { GPIOA, XDR_GPIO_PORT_A, GPIO_PIN_NO_9,  GPIOA, XDR_GPIO_PORT_A, GPIO_PIN_NO_10, 7U },
+        [XDR_UART2] = { GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_5,  GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_6,  7U },
+        [XDR_UART3] = { GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_8,  GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_9,  7U },
+        [XDR_UART4] = { GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_0,  GPIOD, XDR_GPIO_PORT_D, GPIO_PIN_NO_1,  8U },
+        [XDR_UART5] = { GPIOB, XDR_GPIO_PORT_B, GPIO_PIN_NO_8,  GPIOB, XDR_GPIO_PORT_B, GPIO_PIN_NO_9,  7U },
+        [XDR_UART6] = { GPIOC, XDR_GPIO_PORT_C, GPIO_PIN_NO_6,  GPIOC, XDR_GPIO_PORT_C, GPIO_PIN_NO_7,  8U },
+        [XDR_UART7] = { GPIOE, XDR_GPIO_PORT_E, GPIO_PIN_NO_7,  GPIOE, XDR_GPIO_PORT_E, GPIO_PIN_NO_8,  8U },
+    };
+    const uart_pin_cfg *cfg = &uart_pin_map[xdr_uart->xdr_uart_instance];
 
-    gpio_tx.xdr_gpio_pinMode = GPIO_MODE_ALTFN;
-    gpio_tx.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
-    gpio_tx.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
+    xdr_gpio gpio = {
+        .xdr_gpio_pinMode  = GPIO_MODE_ALTFN,
+        .xdr_gpio_pinPuPd  = GPIO_NO_PUPD,
+        .xdr_gpio_pinOType = GPIO_OP_TYPE_PP,
+    };
 
-    gpio_rx.xdr_gpio_pinMode = GPIO_MODE_ALTFN;
-    gpio_rx.xdr_gpio_pinPuPd = GPIO_NO_PUPD;
-    gpio_rx.xdr_gpio_pinOType = GPIO_OP_TYPE_PP;
+    /* TX */
+    gpio.xdr_gpiox       = cfg->tx_port;
+    gpio.xdr_gpio_portId = cfg->tx_port_id;
+    gpio.xdr_gpio_pin    = cfg->tx_pin;
+    XDR_GPIO_Init(&gpio);
+    cfg->tx_port->AFR[UART_AFR_INDEX(cfg->tx_pin)] &= ~(0xFUL << UART_AFR_SHIFT(cfg->tx_pin));
+    cfg->tx_port->AFR[UART_AFR_INDEX(cfg->tx_pin)] |=  ((uint32_t)cfg->af << UART_AFR_SHIFT(cfg->tx_pin));
 
+    /* RX */
+    gpio.xdr_gpiox       = cfg->rx_port;
+    gpio.xdr_gpio_portId = cfg->rx_port_id;
+    gpio.xdr_gpio_pin    = cfg->rx_pin;
+    XDR_GPIO_Init(&gpio);
+    cfg->rx_port->AFR[UART_AFR_INDEX(cfg->rx_pin)] &= ~(0xFUL << UART_AFR_SHIFT(cfg->rx_pin));
+    cfg->rx_port->AFR[UART_AFR_INDEX(cfg->rx_pin)] |=  ((uint32_t)cfg->af << UART_AFR_SHIFT(cfg->rx_pin));
+}
+
+// Clock Enable for UART Instances
+static void UART_Clock_Enable(const xdr_uart *xdr_uart)
+{
     switch (xdr_uart->xdr_uart_instance)
     {
-    case XDR_UART1:
-        // PA9 (TX) and PA10(RX) for UART1
-        gpio_tx.xdr_gpiox = GPIOA;
-        gpio_tx.xdr_gpio_portId = XDR_GPIO_PORT_A;
-        gpio_tx.xdr_gpio_pin = GPIO_PIN_NO_9;
-        XDR_GPIO_Init(&gpio_tx);
-        gpio_tx.xdr_gpiox->AFR[1] &= ~(0xFUL << XDR_UART_GPIO_AF_PA9);
-        gpio_tx.xdr_gpiox->AFR[1] |= (7UL << XDR_UART_GPIO_AF_PA9);
-
-        gpio_rx.xdr_gpiox = GPIOA;
-        gpio_rx.xdr_gpio_portId = XDR_GPIO_PORT_A;
-        gpio_rx.xdr_gpio_pin = GPIO_PIN_NO_10;
-        XDR_GPIO_Init(&gpio_rx);
-        gpio_rx.xdr_gpiox->AFR[1] &= ~(0xFUL << XDR_UART_GPIO_AF_PA10);
-        gpio_rx.xdr_gpiox->AFR[1] |= (7UL << XDR_UART_GPIO_AF_PA10);
-
-        break;
-    case XDR_UART2:
-        // PD5 (TX) and PD6(RX) for UART2
-        gpio_tx.xdr_gpiox = GPIOD;
-        gpio_tx.xdr_gpio_portId = XDR_GPIO_PORT_D;
-        gpio_tx.xdr_gpio_pin = GPIO_PIN_NO_5;
-        XDR_GPIO_Init(&gpio_tx);
-        gpio_tx.xdr_gpiox->AFR[0] &= ~(0xFUL << XDR_UART_GPIO_AF_PD5);
-        gpio_tx.xdr_gpiox->AFR[0] |= (7UL << XDR_UART_GPIO_AF_PD5);
-
-        gpio_rx.xdr_gpiox = GPIOD;
-        gpio_rx.xdr_gpio_portId = XDR_GPIO_PORT_D;
-        gpio_rx.xdr_gpio_pin = GPIO_PIN_NO_6;
-        XDR_GPIO_Init(&gpio_rx);
-        gpio_rx.xdr_gpiox->AFR[0] &= ~(0xFUL << XDR_UART_GPIO_AF_PD6);
-        gpio_rx.xdr_gpiox->AFR[0] |= (7UL << XDR_UART_GPIO_AF_PD6);
-
-        break;
-    case XDR_UART3:
-        // PD8 (TX) and PD9(RX) for UART3
-        gpio_tx.xdr_gpiox = GPIOD;
-        gpio_tx.xdr_gpio_portId = XDR_GPIO_PORT_D;
-        gpio_tx.xdr_gpio_pin = GPIO_PIN_NO_8;
-        XDR_GPIO_Init(&gpio_tx);
-        gpio_tx.xdr_gpiox->AFR[1] &= ~(0xFUL << XDR_UART_GPIO_AF_PD8);
-        gpio_tx.xdr_gpiox->AFR[1] |= (7UL << XDR_UART_GPIO_AF_PD8);
-
-        gpio_rx.xdr_gpiox = GPIOD;
-        gpio_rx.xdr_gpio_portId = XDR_GPIO_PORT_D;
-        gpio_rx.xdr_gpio_pin = GPIO_PIN_NO_9;
-        XDR_GPIO_Init(&gpio_rx);
-        gpio_rx.xdr_gpiox->AFR[1] &= ~(0xFUL << XDR_UART_GPIO_AF_PD9);
-        gpio_rx.xdr_gpiox->AFR[1] |= (7UL << XDR_UART_GPIO_AF_PD9);
-
-        break;
-    case XDR_UART6:
-        // PC6 (TX) and PC7 (RX) for UART6
-        gpio_tx.xdr_gpiox = GPIOC;
-        gpio_tx.xdr_gpio_portId = XDR_GPIO_PORT_C;
-        gpio_tx.xdr_gpio_pin = GPIO_PIN_NO_6;
-        XDR_GPIO_Init(&gpio_tx);
-        gpio_tx.xdr_gpiox->AFR[0] &= ~(0xFUL << XDR_UART_GPIO_AF_PC6);
-        gpio_tx.xdr_gpiox->AFR[0] |= (8UL << XDR_UART_GPIO_AF_PC6);
-
-        gpio_rx.xdr_gpiox = GPIOC;
-        gpio_rx.xdr_gpio_portId = XDR_GPIO_PORT_C;
-        gpio_rx.xdr_gpio_pin = GPIO_PIN_NO_7;
-        XDR_GPIO_Init(&gpio_rx);
-        gpio_rx.xdr_gpiox->AFR[0] &= ~(0xFUL << XDR_UART_GPIO_AF_PC7);
-        gpio_rx.xdr_gpiox->AFR[0] |= (8UL << XDR_UART_GPIO_AF_PC7);
-        break;
-    default:
-        break;
+    case XDR_UART1:  UART1_CLOCK_INIT(); break;
+    case XDR_UART2:  UART2_CLOCK_INIT(); break;
+    case XDR_UART3:  UART3_CLOCK_INIT(); break;
+    case XDR_UART4:  UART4_CLOCK_INIT(); break;
+    case XDR_UART5:  UART5_CLOCK_INIT(); break;
+    case XDR_UART6:  UART6_CLOCK_INIT(); break;
+    case XDR_UART7:  UART7_CLOCK_INIT(); break;
+    default:         break;
     }
 }
 
-// Clock Enable API for UART Instances
-static void XDR_UART_Clock_Enable(xdr_uart *xdr_uart)
-{
-
-    switch (xdr_uart->xdr_uart_instance)
-    {
-    case XDR_UART1:
-        UART1_CLOCK_SOURCE();
-        UART1_CLOCK_ENABLE();
-        xdr_uart->uart = USART1;
-        break;
-    case XDR_UART2:
-        UART2_CLOCK_SOURCE();
-        UART2_CLOCK_ENABLE();
-        xdr_uart->uart = USART2;
-        break;
-    case XDR_UART3:
-        UART3_CLOCK_SOURCE();
-        UART3_CLOCK_ENABLE();
-        xdr_uart->uart = USART3;
-        break;
-    case XDR_UART6:
-        UART6_CLOCK_SOURCE();
-        UART6_CLOCK_ENABLE();
-        xdr_uart->uart = USART6;
-        break;
-    default:
-        break;
-    }
-}
-
-static uint32_t XDR_UART_BRR_Calculation(const xdr_uart *xdr_uart)
+static uint32_t UART_BRR_Calc(const xdr_uart *xdr_uart)
 {
 
     uint32_t baud = xdr_uart->xdr_uart_baudrate;
@@ -193,38 +143,55 @@ static uint32_t XDR_UART_BRR_Calculation(const xdr_uart *xdr_uart)
     return brr;
 }
 
-void XDR_UART_Send(xdr_uart *xdr_uart, uint8_t data)
+void UART_SendChar(const xdr_uart *xdr_uart, char c)
 {
+    UART_SendByte(xdr_uart, (uint8_t)c);
+}
 
-    while ((xdr_uart->uart->ISR & (1UL << XDR_UART_ISR_TXE)) == 0UL)
+void UART_SendString(const xdr_uart *xdr_uart, const char *str)
+{
+    const char *p = str;
+    while (*p != '\0') {
+        UART_SendByte(xdr_uart, (uint8_t)*p);
+        p++;
+    }
+}
+
+static void UART_SendByte(const xdr_uart *xdr_uart, uint8_t data)
+{
+    USART_TypeDef *uart = UART_Get_Instance(xdr_uart->xdr_uart_instance);
+
+    while ((uart->ISR & USART_ISR_TXE) == 0UL)
     {
     }
 
-    xdr_uart->uart->TDR = data;
+    uart->TDR = data;
 
-    while ((xdr_uart->uart->ISR & (1UL << XDR_UART_ISR_TC)) == 0UL)
+    while ((uart->ISR & USART_ISR_TC) == 0UL)
     {
     }
 }
 
-uint8_t XDR_UART_Receive(xdr_uart *xdr_uart)
+uint8_t UART_Receive(const xdr_uart *xdr_uart)
 {
-
+    const USART_TypeDef *uart = UART_Get_Instance(xdr_uart->xdr_uart_instance);
     uint8_t data = 0;
 
-    while ((xdr_uart->uart->ISR & (1UL << XDR_UART_ISR_RXNE)) == 0UL)
+    while ((uart->ISR & USART_ISR_RXNE) == 0UL)
     {
     }
 
-    data = (uint8_t)(xdr_uart->uart->RDR & 0xFFUL);
+    data = (uint8_t)(uart->RDR & 0xFFUL);
 
     return data;
 }
 
-static void XDR_UART3_EnableDMA(xdr_uart *xdr_uart)
+static void XDR_UART3_EnableDMA(const xdr_uart *xdr_uart)
 {
+    USART_TypeDef *uart = UART_Get_Instance(xdr_uart->xdr_uart_instance);
+
     // Enable DMA for UART3 CR3
-    xdr_uart->uart->CR3 = USART_CR3_DMAR | USART_CR3_DMAT;
+    uart->CR3 = USART_CR3_DMAR | USART_CR3_DMAT;
     /*Enable clock access to DMA1*/
     RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
     /*Enable DMA Stream3 Interrupt in NVIC*/
@@ -321,23 +288,26 @@ void DMA1_Stream3_IRQHandler(void)
 
 void XDR_UART3_EnableRxInterrupt(xdr_uart *xdr_uart)
 {
+    USART_TypeDef *uart = UART_Get_Instance(xdr_uart->xdr_uart_instance);
+
     /* Use global xdr_uart */
     uart_irq = xdr_uart;
     // Enable RXNE interrupt
-    xdr_uart->uart->CR1 |= USART_CR1_RXNEIE;
+    uart->CR1 |= USART_CR1_RXNEIE;
     /*Enable USART3_IRQn in NVIC*/
     NVIC_EnableIRQ(USART3_IRQn);
 }
 
 void USART3_IRQHandler(void)
 {
+    USART_TypeDef *uart = UART_Get_Instance(uart_irq->xdr_uart_instance);
 
     // Check RXNE flag AND RXNE interrupt enable
-    if (((uart_irq->uart->ISR & USART_ISR_RXNE) != 0U) &&
-        ((uart_irq->uart->CR1 & USART_CR1_RXNEIE) != 0U))
+    if (((uart->ISR & USART_ISR_RXNE) != 0U) &&
+        ((uart->CR1 & USART_CR1_RXNEIE) != 0U))
     {
         // Reading RDR clears RXNE
-        uint8_t ch = (uint8_t)uart_irq->uart->RDR;
+        uint8_t ch = (uint8_t)uart->RDR;
 
         // Pass data to user hook (best: give parameter)
         XDR_UART3_RxCallback(ch);

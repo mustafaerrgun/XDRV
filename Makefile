@@ -20,7 +20,7 @@ BUILD_DIR             = build
 MCU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
 # Test selection: override on the command line with TEST=<name>
-# e.g.  make TEST=test_gpio1   → compiles Tests/test_gpio1.c
+# e.g.  make TEST=gpio1   → compiles Tests/test_gpio1.c
 TEST    ?= gpio1
 APP_SRC ?= $(PATH_TEST)/test_$(TEST).c
 

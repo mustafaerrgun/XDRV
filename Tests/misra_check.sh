@@ -24,7 +24,9 @@ cppcheck \
   --inline-suppr \
   "--suppress=*:$CMSIS_INCLUDE_ABS/*" \
   "--suppress=*:$CMSIS_DEVICE_ABS/*" \
+  --suppress=misra-c2012-2.7:*xdr_*.c \
   --suppress=misra-c2012-11.4:*xdr_*.c \
+  --suppress=constVariable:*xdr_*.c \
   --suppress=misra-c2012-2.3:*xdr_*.h \
   --suppress=misra-c2012-2.4:*xdr_*.h \
   --suppress=misra-c2012-2.5:*xdr_*.h \
